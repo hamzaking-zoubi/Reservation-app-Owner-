@@ -41,7 +41,8 @@ dependencies:
   flutter_svg: ^1.0.1
   line_awesome_flutter: ^2.0.0
   flutter_screenutil: ^5.5.3+2
-  flutter_local_notifications: ^6.1.1
+  flutter_local_notifications: ^9.5.2
+  rxdart: ^0.27.4
 #  awesome_notifications: ^0.6.21
 #  font_awesome_flutter: ^8.4.0
   bottom_navy_bar: ^6.0.0

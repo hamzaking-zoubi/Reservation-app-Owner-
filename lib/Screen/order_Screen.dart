@@ -6,6 +6,10 @@ import '../myThem.dart';
 import '../provider/darkTheme.dart';
 
 class Order extends StatefulWidget {
+  final payload;
+
+  Order({ this.payload});
+
   @override
   _OrderState createState() => _OrderState();
 }
@@ -18,14 +22,11 @@ class _OrderState extends State<Order> {
   void initState() {
     super.initState();
     _initAppTheme();
+    print(widget.payload ??"xxxxxxx");
   }
   void _initAppTheme() async {
-
     appModel.darkTheme = await appModel.getTheme();
   }
-
-
-
   @override
   Widget build(BuildContext context) {
     final appModel = Provider.of<DarkThem>(context);

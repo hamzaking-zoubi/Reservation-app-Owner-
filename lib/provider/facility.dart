@@ -177,11 +177,19 @@ class Facilities with ChangeNotifier {
           .toList();
       _loadFacility.addAll(data);
       // _item.addAll(data);
-      _facilities.clear();
-      _facilities = _loadFacility;
+
       print("zzzzzlength:${_facilities.length}");
-     // if(response.statusCode==201)
-       // return _loadFacility;
+      if(response.statusCode==201){
+        _facilities.clear();
+        _facilities = _loadFacility;
+        return _loadFacility;
+      }
+      if(response.statusCode>=400){
+
+        return _loadFacility;
+
+      }
+
       // print("zzzzzlength:${_loadFacility[0].listImage[0].path_photo}");
 
     } catch (error) {

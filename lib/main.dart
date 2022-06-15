@@ -14,8 +14,11 @@ import 'Screen/homePage.dart';
 import 'Screen/profile.dart';
 import 'Widget/boutton.dart';
 import 'splash_screen.dart';
+import 'package:timezone/timezone.dart' as tz;
+import 'package:timezone/data/latest.dart' as tz;
 void main() async {
-
+  WidgetsFlutterBinding.ensureInitialized();
+  tz.initializeTimeZones();
   runApp(const MyApp());
 }
 
@@ -30,40 +33,36 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProxyProvider<Auth, Facilities>(
             create: (_) => Facilities('', []),
             update: (BuildContext context, auth, Facilities? previous) =>
-                Facilities(auth.token!,
+                Facilities(auth.token ?? " ",
                     previous!.getData == null ? [] : previous.getData),
           ),
           ChangeNotifierProvider(create: (context) => NavigatorBarChange()),
-          ChangeNotifierProvider( create:(context)=> DarkThem(),),
-
+          ChangeNotifierProvider(
+            create: (context) => DarkThem()..initialize(),
+          ),
         ],
-        child: Consumer2<Auth,DarkThem>(
-            builder: (ctx, auth,them ,_) =>
-
-              MaterialApp(
-              debugShowCheckedModeBanner: false,
-              themeMode: ThemeMode.light,
-              theme: them.darkTheme ? buildDarkTheme() : buildLightTheme(),
-             // themeCustomed,
-              routes: {
-                AuthScreen.routeName: (context) => AuthScreen(),
-                addFacility.routeName: (context) => addFacility(),
-                HomePage.routeName: (context) => HomePage(),
-                MainWidget.routeName: (context) => MainWidget(),
-                DetailScreen.routeName: (context) => DetailScreen(),
-                ProfileScreen.routeName: (context) => ProfileScreen(),
-              },
-              title: 'Flutter Demo',
-              home: auth.isAuth
-                  ? MainWidget()
-                  : FutureBuilder(
-                      future: auth.tryAutoLogin(),
-                      builder: (ctx, authResultSnapShot) =>
-                          authResultSnapShot.connectionState == ConnectionState.waiting
-                              ? SplashScreen()
-                              : AuthScreen()
-              )
-          )
-        ));
+        child: Consumer2<Auth, DarkThem>(
+            builder: (ctx, auth, them, _) => MaterialApp(
+                debugShowCheckedModeBanner: false,
+                // themeMode: ThemeMode.light,
+                theme: them.darkTheme ? buildDarkTheme() : buildLightTheme(),
+                routes: {
+                  AuthScreen.routeName: (context) => AuthScreen(),
+                  addFacility.routeName: (context) => addFacility(),
+                  HomePage.routeName: (context) => HomePage(),
+                  MainWidget.routeName: (context) => MainWidget(),
+                  DetailScreen.routeName: (context) => DetailScreen(),
+                  ProfileScreen.routeName: (context) => ProfileScreen(),
+                },
+                title: 'Flutter Demo',
+                home: auth.isAuth
+                    ? MainWidget()
+                    : FutureBuilder(
+                        future: auth.tryAutoLogin(),
+                        builder: (ctx, authResultSnapShot) =>
+                            authResultSnapShot.connectionState ==
+                                    ConnectionState.waiting
+                                ? SplashScreen()
+                                : AuthScreen()))));
   }
 }

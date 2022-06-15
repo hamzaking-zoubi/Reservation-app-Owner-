@@ -1,6 +1,8 @@
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:project24/notificationApi.dart';
 import 'package:provider/provider.dart';
+import '../Screen/order_Screen.dart';
 import '../provider/navigatorBarCange.dart';
 
 class MainWidget extends StatefulWidget {
@@ -11,6 +13,22 @@ class MainWidget extends StatefulWidget {
 }
 
 class _MainWidgetState extends State<MainWidget> {
+  @override
+  void initState() {
+    super.initState();
+    NotificationApi.init();
+    listenNotificatins();
+  }
+
+  void listenNotificatins() =>
+      NotificationApi.onNotifications.stream.listen(onClickedNotification);
+
+  void onClickedNotification(String? payload) =>
+      Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => Order(
+                payload: payload,
+              )));
+
   @override
   Widget build(BuildContext context) {
     return Consumer<NavigatorBarChange>(
@@ -66,7 +84,8 @@ class _MainWidgetState extends State<MainWidget> {
                       style: Theme.of(context)
                           .textTheme
                           .headline6!
-                          .copyWith(fontSize: 15, fontWeight: FontWeight.w500),                    ),
+                          .copyWith(fontSize: 15, fontWeight: FontWeight.w500),
+                    ),
                     activeColor: Theme.of(context).primaryColor,
                     textAlign: TextAlign.center,
                     //   activeColor: Colors.blue

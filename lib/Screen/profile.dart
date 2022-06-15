@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../Widget/_showErrorDialog.dart';
 import '../Widget/profile_list_item.dart';
 import '../constants.dart';
+import '../notificationApi.dart';
 import '../provider/auth.dart';
 
 final kTitleTextStyle = TextStyle(
@@ -101,6 +102,30 @@ class ProfileScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text("Setting"),
         backgroundColor: Theme.of(context).primaryColor,
+        actions: [
+         FlatButton(
+            onPressed: () {
+              NotificationApi.showNotification(
+                  title:  "Oz Cohen",
+                  body: "Hey!! this is my first Notification!",
+                  payload: "oz.ss",
+              );
+
+            },
+            child: const Icon(Icons.add),
+          ),
+          FlatButton(
+            onPressed: () {
+              NotificationApi.showScheduleNotification(
+                title:  "hamza",
+                body: "Hey!! this is my first Notification!",
+                payload: "oz.ss",
+                scheduleDate:DateTime.now().add(Duration(seconds:15 )) ,
+              );
+            },
+            child: const Icon(Icons.g_mobiledata),
+          ),
+        ],
       ),
       body: Column(
         children: <Widget>[
@@ -133,7 +158,9 @@ class ProfileScreen extends StatelessWidget {
                   },
                 ),
                 ProfileListItem(
-                  onPress: () {},
+                  onPress: () {
+
+                  },
                   icon: LineAwesomeIcons.orcid,
                   text: 'About Bookify',
                 ),
