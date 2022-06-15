@@ -66,8 +66,8 @@ class Facility {
 
 class Facilities with ChangeNotifier {
 
-  static const ApI = 'http://192.168.43.181:8000/';
-//  static const ApI = 'https://laravelprojectfinal.000webhostapp.com/public/';
+//  static const ApI = 'http://192.168.43.181:8000/';
+  static const ApI = 'https://laravelprojectfinal.000webhostapp.com/public/';
   final String authToken;
   List<Facility> _facilities = [];
 
@@ -127,7 +127,8 @@ class Facilities with ChangeNotifier {
 
   Future<void> deleteFacilityById(id) async {
     print(id);
-    final API = ApI + 'api/facility/delete/$id';
+   // final API = ApI + 'api/facility/delete/$id';
+    final API = ApI + 'api/facility/delete/$id?_method=DELETE';
     var auth = "Bearer" + " " + authToken;
     Map<String, String> headers = {
       // 'Content-Type': 'multipart/form-data',
@@ -136,17 +137,15 @@ class Facilities with ChangeNotifier {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
     };
-    final existingProductIndex =
-        _facilities.indexWhere((prod) => prod.id == id);
+    final existingProductIndex = _facilities.indexWhere((prod) => prod.id == id);
     Facility? existingProduct = _facilities[existingProductIndex];
     _facilities.removeAt(existingProductIndex);
-    notifyListeners();
+   // notifyListeners();
     final response = await http.delete(Uri.parse(API), headers: headers);
     print(jsonEncode(response.body));
     if(response.statusCode==201){
       print("ok");
-
-
+      notifyListeners();
     }
     if (response.statusCode >= 400) {
       _facilities.insert(existingProductIndex, existingProduct);
@@ -302,7 +301,6 @@ class Facilities with ChangeNotifier {
     return facility;
   }
 
-
   Future<void> deleteOneImage(idFacility, idImage) async {
     final API = ApI + 'api/facility/deleteOneImage/$idImage';
     var auth = "Bearer" + " " + authToken;
@@ -314,20 +312,14 @@ class Facilities with ChangeNotifier {
       'Content-Type': 'application/json',
     };
     print("deleteOneImage");
-    final existingProductIndex =
-        _facilities.indexWhere((prod) => prod.id == idFacility);
-    final existingPhotoIndex = _facilities[existingProductIndex]
-        .listImage
-        .indexWhere((element) => element.id == idImage);
-    Photo? existingProduct =
-        _facilities[existingProductIndex].listImage[existingPhotoIndex];
+    final existingProductIndex = _facilities.indexWhere((prod) => prod.id == idFacility);
+    final existingPhotoIndex = _facilities[existingProductIndex].listImage.indexWhere((element) => element.id == idImage);
+    Photo? existingProduct = _facilities[existingProductIndex].listImage[existingPhotoIndex];
     _facilities[existingProductIndex].listImage.removeAt(existingProductIndex);
     notifyListeners();
     final response = await http.delete(Uri.parse(API), headers: headers);
     if (response.statusCode >= 400) {
-      _facilities[existingProductIndex]
-          .listImage
-          .insert(existingPhotoIndex, existingProduct);
+      _facilities[existingProductIndex].listImage.insert(existingPhotoIndex, existingProduct);
       notifyListeners();
       throw HttpException('Could not delete Image.');
     }

@@ -7,6 +7,8 @@ final themeCustomed = ThemeData(
    // accentColor:kPrimaryDarkenColor ,
     backgroundColor: kBackgroundLightColor,
     scaffoldBackgroundColor: kBackgroundColor,
+
+
     textTheme: TextTheme(
 
         headline1: TextStyle(
@@ -59,3 +61,31 @@ final themeCustomed = ThemeData(
             fontSize: 12,
             fontFamily: 'Rubik')),);
 
+ThemeData buildLightTheme() {
+    final ThemeData base = ThemeData.light();
+    return base.copyWith(
+//        buttonColor: Colors.redAccent,
+//        cardColor: Colors.white,
+//        accentColor: Colors.redAccent,
+        primaryColor: kPrimaryColor,
+        // accentColor:kPrimaryDarkenColor ,
+        backgroundColor: kBackgroundLightColor,
+        scaffoldBackgroundColor: kBackgroundColor,
+    );
+}
+
+ThemeData buildDarkTheme() {
+    final ThemeData base = ThemeData.dark();
+    return base.copyWith(
+        buttonColor: Colors.blueAccent,
+        cardColor: Colors.grey[800],
+        backgroundColor: Colors.grey[800],
+     //   primaryColor: Colors.blue[900],
+        primaryColor: Colors.blue,
+        accentColor: Colors.blueAccent,
+
+
+
+
+    );
+}

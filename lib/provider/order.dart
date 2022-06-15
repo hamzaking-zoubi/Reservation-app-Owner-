@@ -18,12 +18,5 @@ class Order {
 class Orders with ChangeNotifier{
   List<Order>orders=[
     new Order("1", "1", "10", 55, true, "1/12/2022", "10/12/2022","1/12/2022" )
-
-
-
-
-
-
-
   ];
 }

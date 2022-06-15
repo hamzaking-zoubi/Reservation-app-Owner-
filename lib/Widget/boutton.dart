@@ -63,8 +63,10 @@ class _MainWidgetState extends State<MainWidget> {
                     icon: Icon(Icons.message),
                     title: Text(
                       'Chat',
-                      style: Theme.of(context).textTheme.headline6,
-                    ),
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline6!
+                          .copyWith(fontSize: 15, fontWeight: FontWeight.w500),                    ),
                     activeColor: Theme.of(context).primaryColor,
                     textAlign: TextAlign.center,
                     //   activeColor: Colors.blue

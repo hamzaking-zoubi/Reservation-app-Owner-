@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:project24/Screen/addFacility_screen.dart';
 import 'package:project24/Screen/auth_screen.dart';
+import 'package:project24/provider/darkTheme.dart';
 import 'package:project24/provider/auth.dart';
 import 'package:project24/provider/facility.dart';
 import 'package:project24/provider/navigatorBarCange.dart';
@@ -13,9 +14,8 @@ import 'Screen/homePage.dart';
 import 'Screen/profile.dart';
 import 'Widget/boutton.dart';
 import 'splash_screen.dart';
-
 void main() async {
-  // await Future.delayed(Duration(seconds: 3));
+
   runApp(const MyApp());
 }
 
@@ -34,14 +34,17 @@ class MyApp extends StatelessWidget {
                     previous!.getData == null ? [] : previous.getData),
           ),
           ChangeNotifierProvider(create: (context) => NavigatorBarChange()),
-        ],
-        child: Consumer<Auth>(builder: (ctx, auth, _) {
-          print("token:${auth.isAuth}");
+          ChangeNotifierProvider( create:(context)=> DarkThem(),),
 
-          return MaterialApp(
+        ],
+        child: Consumer2<Auth,DarkThem>(
+            builder: (ctx, auth,them ,_) =>
+
+              MaterialApp(
               debugShowCheckedModeBanner: false,
               themeMode: ThemeMode.light,
-              theme: themeCustomed,
+              theme: them.darkTheme ? buildDarkTheme() : buildLightTheme(),
+             // themeCustomed,
               routes: {
                 AuthScreen.routeName: (context) => AuthScreen(),
                 addFacility.routeName: (context) => addFacility(),
@@ -56,10 +59,11 @@ class MyApp extends StatelessWidget {
                   : FutureBuilder(
                       future: auth.tryAutoLogin(),
                       builder: (ctx, authResultSnapShot) =>
-                          authResultSnapShot.connectionState ==
-                                  ConnectionState.waiting
+                          authResultSnapShot.connectionState == ConnectionState.waiting
                               ? SplashScreen()
-                              : AuthScreen()));
-        }));
+                              : AuthScreen()
+              )
+          )
+        ));
   }
 }

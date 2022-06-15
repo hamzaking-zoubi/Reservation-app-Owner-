@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../myThem.dart';
+import '../provider/darkTheme.dart';
 
 class Order extends StatefulWidget {
   @override
@@ -9,13 +11,38 @@ class Order extends StatefulWidget {
 }
 
 class _OrderState extends State<Order> {
+
+  DarkThem appModel = new DarkThem();
+
+  @override
+  void initState() {
+    super.initState();
+    _initAppTheme();
+  }
+  void _initAppTheme() async {
+
+    appModel.darkTheme = await appModel.getTheme();
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
-
+    final appModel = Provider.of<DarkThem>(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColor,
         title: Text('Order'),
+        actions: [
+          FlatButton(
+            onPressed: () {
+              appModel.darkTheme = !appModel.darkTheme;
+            },
+            child: Text('Toggle dark theme'),
+          ),
+
+
+        ],
       ),
       body: ListView.builder(
           shrinkWrap: true,

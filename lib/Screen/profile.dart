@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:provider/provider.dart';
+import '../Widget/_showErrorDialog.dart';
 import '../Widget/profile_list_item.dart';
 import '../constants.dart';
 import '../provider/auth.dart';
@@ -28,7 +29,14 @@ class ProfileScreen extends StatelessWidget {
                     child: Text('NO')),
                 FlatButton(
                     onPressed: () {
-                      Provider.of<Auth>(context, listen: false).logout(context);
+                      Provider.of<Auth>(context, listen: false)
+                          .logout(context)
+                          .catchError((error) {
+                        showErrorDialog(error, context);
+                      }).then((value) {
+
+
+                      });
                     },
                     child: Text('Yes'))
               ],
@@ -45,9 +53,7 @@ class ProfileScreen extends StatelessWidget {
           width: kSpacingUnit.w * 10,
           margin: EdgeInsets.only(top: kSpacingUnit.w * 2),
           child: InkWell(
-            onTap: () {
-
-            },
+            onTap: () {},
             child: Stack(
               children: <Widget>[
                 CircleAvatar(
@@ -104,7 +110,7 @@ class ProfileScreen extends StatelessWidget {
             child: ListView(
               children: <Widget>[
                 ProfileListItem(
-                  icon:LineAwesomeIcons.user ,  //Icons.supervised_user_circle,
+                  icon: LineAwesomeIcons.user, //Icons.supervised_user_circle,
                   text: 'Profile',
                   onPress: () {},
                 ),
@@ -118,7 +124,6 @@ class ProfileScreen extends StatelessWidget {
                   icon: LineAwesomeIcons.cog,
                   text: 'Settings',
                 ),
-
                 ProfileListItem(
                   icon: LineAwesomeIcons.alternate_sign_out,
                   text: 'Logout',

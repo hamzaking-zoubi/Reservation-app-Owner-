@@ -135,7 +135,7 @@ class Auth with ChangeNotifier {
   }
 
   Future<void> logout(context) async {
-    var API = Facilities.ApI + 'api/auth/logout';
+    var API = Facilities.ApI + 'api/auth/logout?_method=DELETE';
     // var API = 'http://192.168.43.215:8000/api/auth/logout';
     String tokenAuthorization = "Bearer" + " " + _token;
     Map<String, String> headers = {
@@ -146,7 +146,7 @@ class Auth with ChangeNotifier {
     };
     final http.Response response;
     try {
-      response = await http.delete(Uri.parse(API), headers: headers);
+      response = await http.post(Uri.parse(API), headers: headers);
       var responseData = json.decode(response.body);
       print(responseData);
       if (response.statusCode == 201) {
@@ -158,9 +158,9 @@ class Auth with ChangeNotifier {
             AuthScreen.routeName, (Route<dynamic> route) => false);
 //        Navigator.of(context).pushReplacementNamed(
 //            AuthScreen.routeName);
-
-
       }
+      if(response.statusCode>=400)
+        throw 'some thing error ';
     } catch (errore) {
       print(errore);
       throw errore;

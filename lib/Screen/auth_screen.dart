@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
 import '../Widget/boutton.dart';
+import '../Widget/_showErrorDialog.dart';
 import '../provider/auth.dart';
 
 enum AuthMode { Signup, Login }
@@ -120,19 +121,19 @@ class _AuthCardState extends State<AuthCard> {
     super.dispose();
   }
 
-  void _showErrorDialog( error) {
-    showDialog(
-        context: context,
-        builder: (ctx) => AlertDialog(
-              title: Text('An error occured'),
-              content: Text("${error}"),
-              actions: [
-                FlatButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    child: Text('Okay'))
-              ],
-            ));
-  }
+//  void _showErrorDialog( error) {
+//    showDialog(
+//        context: context,
+//        builder: (ctx) => AlertDialog(
+//              title: Text('An error occured'),
+//              content: Text("${error}"),
+//              actions: [
+//                FlatButton(
+//                    onPressed: () => Navigator.of(context).pop(),
+//                    child: Text('Okay'))
+//              ],
+//            ));
+//  }
 
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) {
@@ -164,7 +165,7 @@ class _AuthCardState extends State<AuthCard> {
       }
     } catch (error) {
       //   var errorMessage = "could not authenticate you, Please try again later";
-      _showErrorDialog(error);
+      showErrorDialog(error,context);
     }
 
     setState(() {

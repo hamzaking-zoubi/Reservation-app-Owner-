@@ -6,6 +6,7 @@ import 'package:project24/myThem.dart';
 import 'package:project24/provider/facility.dart';
 import 'package:provider/provider.dart';
 import 'package:project24/Widget/boutton.dart';
+import '../Widget/_showErrorDialog.dart';
 import '../provider/navigatorBarCange.dart';
 import '../provider/photo.dart';
 
@@ -183,7 +184,8 @@ class addFacilityState extends State<addFacility> {
             print("--------------------------------------------------------");
             print("${error}");
             print("---------------------------------------------------------");
-            showDialogError(error);
+            showErrorDialog(error,context);
+
           }).then((value) {
             setState(() {
               _isLoading = false;
@@ -214,7 +216,7 @@ class addFacilityState extends State<addFacility> {
           await Provider.of<Facilities>(context, listen: false)
               .addFacility(_editedFacility)
               .catchError((error) {
-            showDialogError(error);
+            showErrorDialog(error,context);
           }).then((value) {
             setState(() {
               _isLoading = false;
@@ -273,12 +275,14 @@ class addFacilityState extends State<addFacility> {
                   SizedBox(
                     height: 25,
                   ),
-                  if (!isImagePicked /*&& listImage!.isEmpty*/) addImageIcon(),
-                  if (isImagePicked) ImageList(),
+                  if (!isImagePicked /*&& listImage!.isEmpty*/)
+                    addImageIcon(),
+                  if (isImagePicked)
+                    ImageList(),
                   SizedBox(
                     height: 10,
                   ),
-                  if (_editedFacility.id != ' ' && listImage!.isNotEmpty)
+                  if (_editedFacility.id != ' ' /* && listImage!.isNotEmpty*/)
                     Container(
                       height: 50,
                       child: ElevatedButton(
@@ -299,17 +303,12 @@ class addFacilityState extends State<addFacility> {
                           onPressed: () async {
                             updateAddImageToList = true;
                             addImageButton();
-                            //print("update ${updateAddImage!.length}");
-                            //  print("listimage ${listImage!.length}");
 
-//                      setState(() {
-//
-//                      });
                           }),
                     ),
                   SizedBox(height:10 ,),
                   if (_editedFacility.id != ' ' &&
-                      listImage!.isNotEmpty &&
+                     /* listImage!.isNotEmpty &&*/
                       updateAddImage!.isNotEmpty)
                     Container(
                         height: 50,
@@ -325,7 +324,7 @@ class addFacilityState extends State<addFacility> {
                               setState(() {
                                 _isLoading = true;
                               });
-                              updateAddImageToList = true;
+                              updateAddImageToList = false;
                               // addImageButton();
                               print("update ${updateAddImage!.length}");
                               print("listimage ${listImage!.length}");
@@ -336,14 +335,15 @@ class addFacilityState extends State<addFacility> {
                                   .catchError((error) {
                                 print("--------------------------");
                                 print(error);
-                                showDialogError(error);
+                                showErrorDialog(error,context);
                                 print("--------------------------");
                               }).then((value) {
                                 listImage!.addAll(updateAddImage!);
+                                updateAddImage!.clear();
                               });
                               setState(() {
                                 _isLoading = false;
-                                updateAddImage!.clear();
+
                               });
                             })),
                   SizedBox(height:10 ,)
@@ -790,21 +790,27 @@ class addFacilityState extends State<addFacility> {
                                       _editedFacility.id, listImage![i].id)
                                   .catchError((error) {
                                 /// Navigator.of(context).pop();
-                                showDialogError(error);
+                                showErrorDialog(error,context);
+
                               }).then((_) {
                                 print("delete Image web ");
 
                                 setState(() {
-                                  if (listImage!.isEmpty) isImagePicked = false;
+                                  if (listImage!.isEmpty) {
+                                    isImagePicked = false;
+                                  }
                                 });
                                 Navigator.of(context).pop();
                                 //  Navigator.of(context).pop();
                               });
                             } else {
-                              if (listImage!.isNotEmpty) listImage!.removeAt(i);
+                              if (listImage!.isNotEmpty)
+                                listImage!.removeAt(i);
                               print("delete Image add ");
                               setState(() {
-                                if (listImage!.isEmpty) isImagePicked = false;
+                                if (listImage!.isEmpty) {
+                                  isImagePicked = false;
+                                }
                               });
                               Navigator.of(context).pop();
                             }
@@ -871,22 +877,7 @@ class addFacilityState extends State<addFacility> {
             ));
   }
 
-  showDialogError(error) {
-    print(error);
-    return showDialog(
-        context: context,
-        builder: (ctx) => AlertDialog(
-              title: Text(" An error occurred"),
-              content: Text("Something went error   ${error}"),
-              actions: [
-                FlatButton(
-                    onPressed: () {
-                      Navigator.of(ctx).pop();
-                    },
-                    child: Text("Okay"))
-              ],
-            ));
-  }
+
 
   uploadImage(imageType) async {
     try {
