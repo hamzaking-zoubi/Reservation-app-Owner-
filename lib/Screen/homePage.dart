@@ -36,10 +36,15 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    var facility = Provider.of<Facilities>(context, listen: false).getData;
+    var facility = Provider
+        .of<Facilities>(context, listen: false)
+        .getData;
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).primaryColor,
+
+        backgroundColor: Theme
+            .of(context)
+            .primaryColor,
 //        actions: [
 //          ElevatedButton(onPressed: (){
 //
@@ -48,39 +53,41 @@ class _HomePageState extends State<HomePage> {
 //          }, child: Icon(Icons.add))
 //
 //        ],
-      //  backgroundColor:Colors.yellow ,
+        //  backgroundColor:Colors.yellow ,
         title: Text('home Page'),
       ),
       body:
 //      _isLoading
 //          ? Center(child: CircularProgressIndicator())
 //          :
-          Padding(
+      Padding(
         padding: const EdgeInsets.all(8.0),
         child: FutureBuilder(
           future: Provider.of<Facilities>(context, listen: false)
               .fetchAndSetFacilityList(),
-          builder: (context, AsyncSnapshot<List> snapshot) => snapshot.hasData
+          builder: (context, AsyncSnapshot<List> snapshot) =>
+          snapshot.hasData
               ? Consumer<Facilities>(
-                  builder: (context, value, child) =>
-                      ListView.builder(
-                          itemCount: snapshot.data!.length,
-                          itemBuilder: (context, index) {
-                    return FacilityItem(
-                      title:    snapshot.data![index].title,
-                      cost:    snapshot.data![index].cost,
-                      image:    snapshot.data![index].listImage[0]!=null?snapshot.data![index].listImage[0].path_photo:"",
-                      id:    snapshot.data![index].id,
-                      // description: facility[i].description,
-                      location:    snapshot.data![index].location,
-                      rate:    snapshot.data![index].rate,
-                      type:    snapshot.data![index].type,
-                    );
-                  }),
-                )
+            builder: (context, value, child) =>
+                ListView.builder(
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (context, index) {
+                      return FacilityItem(
+                        title: snapshot.data![index].title ?? " ",
+                        cost: snapshot.data![index].cost ?? "",
+                        image: snapshot.data![index].listImage[0] != null
+                            ? snapshot.data![index].listImage[0].path_photo : " ",
+                        id: snapshot.data![index].id ?? " ",
+                        // description: facility[i].description,
+                        location: snapshot.data![index].location ?? " ",
+                        rate: snapshot.data![index].rate ?? " ",
+                        type: snapshot.data![index].type ?? " ",
+                      );
+                    }),
+          )
               : Center(
-                  child: CircularProgressIndicator(),
-                ),
+            child: CircularProgressIndicator(),
+          ),
         ),
       ),
     );

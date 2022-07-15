@@ -41,6 +41,10 @@ class FacilityItem extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         // Navigator.of(context).pushNamed(Detail.routeName,arguments:id);
+
+        print("iddddddddddddddddddddd${id}");
+
+
         Navigator.of(context).pushNamed(DetailScreen.routeName, arguments: id);
       },
       child: Container(

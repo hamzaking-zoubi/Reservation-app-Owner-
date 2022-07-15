@@ -16,18 +16,18 @@ class _MainWidgetState extends State<MainWidget> {
   @override
   void initState() {
     super.initState();
-    NotificationApi.init();
-    listenNotificatins();
+   // NotificationApi.init();
+   // listenNotificatins();
   }
 
-  void listenNotificatins() =>
-      NotificationApi.onNotifications.stream.listen(onClickedNotification);
-
-  void onClickedNotification(String? payload) =>
-      Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => Order(
-                payload: payload,
-              )));
+//  void listenNotificatins() =>
+//      NotificationApi.onNotifications.stream.listen(onClickedNotification);
+//
+//  void onClickedNotification(String? payload) =>
+//      Navigator.of(context).push(MaterialPageRoute(
+//          builder: (context) => Order(
+//                payload: payload,
+//              )));
 
   @override
   Widget build(BuildContext context) {

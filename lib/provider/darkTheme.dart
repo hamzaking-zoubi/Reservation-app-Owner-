@@ -12,7 +12,7 @@ class DarkThem with ChangeNotifier {
   Future<bool> getTheme() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     _darkTheme = prefs.getBool(THEME_SETTING) ?? false;
-    print("thheeeeeeeeeeeeemmmmmmmm${_darkTheme}");
+   // print("thheeeeeeeeeeeeemmmmmmmm${_darkTheme}");
     notifyListeners();
     return _darkTheme;
   }

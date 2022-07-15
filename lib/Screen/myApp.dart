@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
+import 'package:project24/Screen/profile_screen.dart';
 import 'package:provider/provider.dart';
 import '../Widget/_showErrorDialog.dart';
 import '../Widget/profile_list_item.dart';
@@ -13,7 +14,7 @@ final kTitleTextStyle = TextStyle(
   fontWeight: FontWeight.w600,
 );
 
-class ProfileScreen extends StatelessWidget {
+class MyAppli extends StatelessWidget {
   static const routeName = '/ProfileScreen';
 
   void _showErrorDialog(BuildContext context) {
@@ -114,17 +115,17 @@ class ProfileScreen extends StatelessWidget {
             },
             child: const Icon(Icons.add),
           ),
-          FlatButton(
-            onPressed: () {
-              NotificationApi.showScheduleNotification(
-                title:  "hamza",
-                body: "Hey!! this is my first Notification!",
-                payload: "oz.ss",
-                scheduleDate:DateTime.now().add(Duration(seconds:15 )) ,
-              );
-            },
-            child: const Icon(Icons.g_mobiledata),
-          ),
+//          FlatButton(
+//            onPressed: () {
+//              NotificationApi.showScheduleNotification(
+//                title:  "hamza",
+//                body: "Hey!! this is my first Notification!",
+//                payload: "oz.ss",
+//                scheduleDate:DateTime.now().add(Duration(seconds:15 )) ,
+//              );
+//            },
+//            child: const Icon(Icons.g_mobiledata),
+//          ),
         ],
       ),
       body: Column(
@@ -137,7 +138,10 @@ class ProfileScreen extends StatelessWidget {
                 ProfileListItem(
                   icon: LineAwesomeIcons.user, //Icons.supervised_user_circle,
                   text: 'Profile',
-                  onPress: () {},
+                  onPress: () {
+                    Navigator.of(context).pushNamed(ProfileScreen.routeName);
+
+                  },
                 ),
                 ProfileListItem(
                   onPress: () {},

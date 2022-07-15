@@ -17,6 +17,9 @@ class Facility {
   final numberGuests;
   final numberRooms;
   final rate;
+
+
+  
   final wifi;
   final coffee_machine;
   final air_condition;
@@ -67,7 +70,8 @@ class Facility {
 class Facilities with ChangeNotifier {
 
 //  static const ApI = 'http://192.168.43.181:8000/';
-  static const ApI = 'https://laravelprojectfinal.000webhostapp.com/public/';
+//  static const ApI = 'https://laravelprojectfinal.000webhostapp.com/public/';
+  static const ApI = 'http://laravelapimk.atwebpages.com/public/';
   final String authToken;
   List<Facility> _facilities = [];
 
@@ -124,10 +128,7 @@ class Facilities with ChangeNotifier {
       throw error;
     }
   }
-
-  Future<void> deleteFacilityById(id) async {
-    print(id);
-   // final API = ApI + 'api/facility/delete/$id';
+    deleteFacilityById(id) async {
     final API = ApI + 'api/facility/delete/$id?_method=DELETE';
     var auth = "Bearer" + " " + authToken;
     Map<String, String> headers = {
@@ -140,13 +141,9 @@ class Facilities with ChangeNotifier {
     final existingProductIndex = _facilities.indexWhere((prod) => prod.id == id);
     Facility? existingProduct = _facilities[existingProductIndex];
     _facilities.removeAt(existingProductIndex);
-   // notifyListeners();
+    notifyListeners();
     final response = await http.delete(Uri.parse(API), headers: headers);
-    print(jsonEncode(response.body));
-    if(response.statusCode==201){
-      print("ok");
-      notifyListeners();
-    }
+    notifyListeners();
     if (response.statusCode >= 400) {
       _facilities.insert(existingProductIndex, existingProduct);
       notifyListeners();
@@ -176,19 +173,11 @@ class Facilities with ChangeNotifier {
           .map((data) => Facility.fromJson(data))
           .toList();
       _loadFacility.addAll(data);
-      // _item.addAll(data);
-
       print("zzzzzlength:${_facilities.length}");
-      if(response.statusCode==201){
+
         _facilities.clear();
-        _facilities = _loadFacility;
-        return _loadFacility;
-      }
-      if(response.statusCode>=400){
-
-        return _loadFacility;
-
-      }
+        _facilities.addAll( _loadFacility);
+        notifyListeners();
 
       // print("zzzzzlength:${_loadFacility[0].listImage[0].path_photo}");
 
@@ -197,6 +186,7 @@ class Facilities with ChangeNotifier {
       throw error;
     }
     return _loadFacility;
+
   }
 
   Future<void> fetchAndSetFacility() async {
@@ -305,6 +295,8 @@ class Facilities with ChangeNotifier {
       facility = _facilities.firstWhere((element) => element.id == id);
     } catch (error) {
       print("eeeeeeeeeeeeeeeeeeeeeeeeeeeerrrrrrrrrrrrrrrrrrrrrooooooooooooooorrrrrrrr${error}");
+    throw error;
+
     }
     return facility;
   }

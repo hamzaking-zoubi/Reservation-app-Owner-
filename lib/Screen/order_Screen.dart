@@ -1,32 +1,89 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:pusher_channels_flutter/pusher_channels_flutter.dart';
+import 'package:pusher_client/pusher_client.dart';
 
 import '../myThem.dart';
+import '../notificationApi.dart';
 import '../provider/darkTheme.dart';
+import '../pusherController.dart';
 
 class Order extends StatefulWidget {
   final payload;
 
-  Order({ this.payload});
+  Order({this.payload});
 
   @override
   _OrderState createState() => _OrderState();
 }
 
 class _OrderState extends State<Order> {
-
   DarkThem appModel = new DarkThem();
 
   @override
-  void initState() {
+  void initState()  {
     super.initState();
     _initAppTheme();
-    print(widget.payload ??"xxxxxxx");
+    //   inti();
+   // PusherController().setChannelName("hamza");
+   // PusherController().setEventName("noti");
+    PusherController().initPusher();
+    PusherController().connectPusher();
+    PusherController().subscribePusher();
+    print("------------------------------------");
+   // print( PusherController().eventStream.toString());
+    print("------------------------------------");
+
+
   }
+
+  inti() {
+    PusherOptions options = PusherOptions(
+      cluster: "ap2",
+    );
+    PusherClient pusher = PusherClient(
+      "44f1ce32e7383ebc0ac1",
+      options,
+      enableLogging: false,
+      autoConnect: false,
+    );
+    pusher.connect();
+    pusher.onConnectionStateChange((state) {
+      print(
+          "previousState: ${state!.previousState}, currentState: ${state.currentState}");
+    });
+    pusher.onConnectionError((error) {
+      print("errornnnnn: ${error!.message}");
+    });
+    Channel channel = pusher.subscribe("hamza");
+    channel.bind("noti", (onEvent) {
+      if (mounted) {
+        print("-------------------------");
+        final data = json.decode(onEvent!.data.toString());
+        print("->>>${data}");
+
+        NotificationApi.showNotification(
+          title: data['tittle'],
+          body: data['body'],
+          payload: "oz.ss",
+        );
+        print("-------------------------");
+      }
+    });
+
+// Unsubscribe from channel
+//    pusher.unsubscribe("hamza");
+//
+//    pusher.disconnect();
+  }
+
   void _initAppTheme() async {
     appModel.darkTheme = await appModel.getTheme();
   }
+
   @override
   Widget build(BuildContext context) {
     final appModel = Provider.of<DarkThem>(context);
@@ -41,8 +98,12 @@ class _OrderState extends State<Order> {
             },
             child: Text('Toggle dark theme'),
           ),
-
-
+          FlatButton(
+            onPressed: () {
+              PusherController().disconnectPusher();
+            },
+            child: Icon(Icons.ac_unit),
+          ),
         ],
       ),
       body: ListView.builder(
@@ -53,13 +114,17 @@ class _OrderState extends State<Order> {
             // final recentChat = recentChats[index];
             return Column(
               children: [
-              Reservations(),
-                Divider(height:2 ,)
-            ],);
+                Reservations(),
+                Divider(
+                  height: 2,
+                )
+              ],
+            );
           }),
     );
   }
 }
+
 class Reservations extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -73,8 +138,7 @@ class Reservations extends StatelessWidget {
           children: [
             CircleAvatar(
               radius: 28,
-              backgroundImage:
-              AssetImage("assets/images/bp_avatar.png"),
+              backgroundImage: AssetImage("assets/images/bp_avatar.png"),
             ),
             SizedBox(
               width: 20,
@@ -125,8 +189,8 @@ class Reservations extends StatelessWidget {
               //  crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Container(
-                    width:wd/8  ,
-                    height:wd/8  ,
+                    width: wd / 8,
+                    height: wd / 8,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(28),
                         border: Border.all(width: 2)),
@@ -138,13 +202,12 @@ class Reservations extends StatelessWidget {
                   width: 5,
                 ),
                 Container(
-                  width:wd/8 ,
-                  height:wd/8  ,
+                  width: wd / 8,
+                  height: wd / 8,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(28),
                       border: Border.all(
-                          width: 2,
-                          color: Theme.of(context).accentColor)),
+                          width: 2, color: Theme.of(context).accentColor)),
                   child: IconButton(
                     onPressed: () {},
                     icon: Icon(Icons.check),
@@ -153,7 +216,6 @@ class Reservations extends StatelessWidget {
                 ),
               ],
             ),
-
           ],
         ));
   }

@@ -3,12 +3,12 @@ import 'package:rxdart/rxdart.dart';
 import 'package:timezone/timezone.dart' as tz;
 
 class NotificationApi {
-  static final FlutterLocalNotificationsPlugin _notifications =
-      FlutterLocalNotificationsPlugin();
+  static final FlutterLocalNotificationsPlugin _notifications = FlutterLocalNotificationsPlugin();
   static final onNotifications = BehaviorSubject<String?>();
 
   static Future _notificationDetailes() async => const NotificationDetails(
-        android: AndroidNotificationDetails("channel id", "channel name",
+        android: AndroidNotificationDetails(
+            "channel id", "channel name",
             channelDescription: "channel description",
             importance: Importance.max,
             icon: "@mipmap/ic_launcher",
@@ -38,21 +38,21 @@ class NotificationApi {
       _notifications.show(id, title, body, await _notificationDetailes(),
           payload: payload);
 
-  static Future showScheduleNotification(
-          {int id = 0,
-          String? title,
-          String? body,
-          String? payload,
-          required DateTime scheduleDate}) async =>
-      _notifications.zonedSchedule(
-        id,
-        title,
-        body,
-        tz.TZDateTime.from(scheduleDate, tz.local),
-        await _notificationDetailes(),
-        payload: payload,
-        uiLocalNotificationDateInterpretation:
-            UILocalNotificationDateInterpretation.absoluteTime,
-        androidAllowWhileIdle: true,
-      );
+//  static Future showScheduleNotification(
+//          {int id = 0,
+//          String? title,
+//          String? body,
+//          String? payload,
+//          required DateTime scheduleDate}) async =>
+//      _notifications.zonedSchedule(
+//        id,
+//        title,
+//        body,
+//        tz.TZDateTime.from(scheduleDate, tz.local),
+//        await _notificationDetailes(),
+//        payload: payload,
+//        uiLocalNotificationDateInterpretation:
+//            UILocalNotificationDateInterpretation.absoluteTime,
+//        androidAllowWhileIdle: true,
+//      );
 }

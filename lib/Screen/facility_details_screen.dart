@@ -5,11 +5,24 @@ import '../constants.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:project24/Screen/addFacility_screen.dart';
 import '../provider/facility.dart';
-
-class DetailScreen extends StatelessWidget {
+import '../provider/photo.dart';
+import 'package:project24/Widget/boutton.dart';
+class DetailScreen extends StatefulWidget{
   static const routeName = '/details_screen';
 
-  DetailScreen();
+  const DetailScreen({Key? key}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() {
+    return DetailScreenState();
+  }
+
+}
+
+
+class DetailScreenState extends State<DetailScreen> {
+
+  DetailScreenState();
 
   static const _LOADING_IMAGE = 'assets/images/bp_loading.gif';
   static const _BACKWARD_ICON =
@@ -20,6 +33,10 @@ class DetailScreen extends StatelessWidget {
     final facilityId = ModalRoute.of(context)!.settings.arguments;
     final facility =
         Provider.of<Facilities>(context, listen: false).findById(facilityId);
+//List<Photo> photo=[
+//    Photo(path_photo: "https://th.bing.com/th/id/R.a9fd1fe3731d6e4c67d4b280d7512908?rik=Z4VFedr%2b157wag&pid=ImgRaw&r=0")
+//    ];
+
     final _screenWidth = MediaQuery.of(context).size.width;
     final _screenHeight = MediaQuery.of(context).size.height;
 
@@ -44,7 +61,8 @@ class DetailScreen extends StatelessWidget {
                   image: facility.listImage[0] != null
                       ? ResizeImage(
                           // AssetImage('assets/images/facility.jpg'),
-                          NetworkImage(Facilities.ApI+"${facility.listImage[0].path_photo}"),
+                          NetworkImage(Facilities.ApI +
+                              "${facility.listImage[0].path_photo}"),
                           width: _screenWidth.round(),
                           height: _screenHeight.round())
                       : ResizeImage(AssetImage('assets/images/facility.jpg'),
@@ -70,10 +88,9 @@ class DetailScreen extends StatelessWidget {
                           //  alignment: Alignment.centerLeft,
                           height: 24,
                           width: 24,
-                          child: SvgPicture.asset(_BACKWARD_ICON,
-                              color:Theme.of(context).primaryColor,
-
-
+                          child: SvgPicture.asset(
+                            _BACKWARD_ICON,
+                            color: Theme.of(context).primaryColor,
                           )),
                     ),
                   ),
@@ -91,16 +108,29 @@ class DetailScreen extends StatelessWidget {
                                     actions: [
                                       FlatButton(
                                         onPressed: () async {
-                                          await Provider.of<Facilities>(context,
-                                                  listen: false)
-                                              .deleteFacilityById(facility.id)
-                                              .catchError((error) {
-                                            Navigator.of(context).pop();
-                                            showDialogError(error, context);
-                                          }).then((_) {
-                                            Navigator.of(context).pop();
-                                            Navigator.of(context).pop();
-                                          });
+                                          if (facility != null) {
+                                            await Provider.of<Facilities>(
+                                                    context,
+                                                    listen: false)
+                                                .deleteFacilityById(facility.id)
+                                                .catchError((error) {
+                                              Navigator.of(context).pop();
+                                              showDialogError(error, context);
+                                            }).then((_) {
+                                           //   Navigator.of(context).pop();
+//                                              setState(() {
+//                                                Navigator.of(context).pop();
+//
+//                                              });
+
+                                             // Navigator.of(context).pushReplacementNamed(   MainWidget.routeName);
+
+                                              Navigator.of(context)
+                                                  .pushNamedAndRemoveUntil(
+                                                      MainWidget.routeName,
+                                                      (Route<dynamic> route) => false);
+                                            });
+                                          }
                                         },
                                         child: Text('oky'),
                                       ),
@@ -239,4 +269,6 @@ class DetailScreen extends StatelessWidget {
               ],
             ));
   }
+
+
 }
