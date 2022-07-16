@@ -90,7 +90,7 @@ class addFacilityState extends State<addFacility> {
           ModalRoute.of(context)!.settings.arguments as String?;
       if (productId != null) {
         _editedFacility =
-            Provider.of<Facilities>(context, listen: false).findById(productId);
+            Provider.of<Facilities>(context, listen: false).findById(productId) as Facility;
         listImage = _editedFacility.listImage;
         isImagePicked = true;
         facilityType = _editedFacility.type;

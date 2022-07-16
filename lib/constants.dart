@@ -8,7 +8,7 @@ const kPrimaryDarkenColor = Color(0xFF2D3142);
 
 // Background Color
 const kBackgroundColor = Color(0xFFF5FAFF);
-const kBackgroundLightColor = Colors.red;
+const kBackgroundLightColor =Color(0xFFFFFFFF);
 // Box Color
 const kDisabledButtonColor = Color(0xFFD2D2D2);
 const kSizeBoxLightColor = Color(0xFFEBF3FF);

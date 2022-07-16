@@ -44,26 +44,20 @@ class MyProfile extends ChangeNotifier {
       'Authorization': "Bearer " + token
     };
     var _myProfile;
-//    var _myProfile=Profile(id: 1, age:"199",
-//        gender: "male", email: "dde",
-//        phone: "09222", userName: "eef", amount:
-//    12, profilePhoto: "ddd");
     try {
       final response = await http.get(url, headers: headers);
       final profileData = json.decode(response.body);
       print(response.body);
         _myProfile = Profile(
-          id: profileData['profile']['id_user'],
+          id: profileData['profile']['id_user']??0,
           age: profileData['profile']['age']??"18",
           gender: profileData['profile']['gender']??"male",
           email: profileData['user']['email']??'**@gmail.com',
-          phone: profileData['profile']['phone']??"09******",
+          phone: profileData['profile']['phone']??"+09******",
           userName: profileData['user']['name']??'n**',
           amount: profileData['user']['amount']??0,
           profilePhoto: profileData['profile']['path_photo']??''
         );
-
-
     } catch (e) {
       print(e);
     }

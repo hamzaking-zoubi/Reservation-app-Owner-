@@ -21,21 +21,21 @@ class Order extends StatefulWidget {
 }
 
 class _OrderState extends State<Order> {
-  DarkThem appModel = new DarkThem();
+
 
   @override
   void initState()  {
     super.initState();
-    _initAppTheme();
+  // _initAppTheme();
     //   inti();
    // PusherController().setChannelName("hamza");
    // PusherController().setEventName("noti");
-    PusherController().initPusher();
-    PusherController().connectPusher();
-    PusherController().subscribePusher();
-    print("------------------------------------");
+  //  PusherController().initPusher();
+    //PusherController().connectPusher();
+    //PusherController().subscribePusher();
+   // print("------------------------------------");
    // print( PusherController().eventStream.toString());
-    print("------------------------------------");
+   // print("------------------------------------");
 
 
   }
@@ -80,9 +80,7 @@ class _OrderState extends State<Order> {
 //    pusher.disconnect();
   }
 
-  void _initAppTheme() async {
-    appModel.darkTheme = await appModel.getTheme();
-  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -91,20 +89,7 @@ class _OrderState extends State<Order> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColor,
         title: Text('Order'),
-        actions: [
-          FlatButton(
-            onPressed: () {
-              appModel.darkTheme = !appModel.darkTheme;
-            },
-            child: Text('Toggle dark theme'),
-          ),
-          FlatButton(
-            onPressed: () {
-              PusherController().disconnectPusher();
-            },
-            child: Icon(Icons.ac_unit),
-          ),
-        ],
+
       ),
       body: ListView.builder(
           shrinkWrap: true,

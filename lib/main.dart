@@ -19,6 +19,9 @@ import 'Screen/facility_details_screen.dart';
 import 'Screen/homePage.dart';
 import 'Screen/myApp.dart';
 import 'Screen/profile_screen.dart';
+import 'Screen/setting.dart';
+import 'Screen/test.dart';
+import 'Screen/test_details_screen.dart';
 import 'Widget/boutton.dart';
 import 'notificationApi.dart';
 import 'splash_screen.dart';
@@ -96,6 +99,9 @@ class MyApp extends StatelessWidget {
                   DetailScreen.routeName: (context) => DetailScreen(),
                   MyAppli.routeName: (context) => MyAppli(),
                   ProfileScreen.routeName: (context) => ProfileScreen(),
+                  SettingScreen.routeName: (context) => SettingScreen(),
+                  NewDetailsScreen.routeName: (context) => NewDetailsScreen(),
+               //   testdetal.routName: (context) => testdetal(),
                 },
                 title: 'Flutter Demo',
                 home: auth.isAuth

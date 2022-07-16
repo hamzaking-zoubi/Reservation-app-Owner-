@@ -32,7 +32,7 @@ class DetailScreenState extends State<DetailScreen> {
   Widget build(BuildContext context) {
     final facilityId = ModalRoute.of(context)!.settings.arguments;
     final facility =
-        Provider.of<Facilities>(context, listen: false).findById(facilityId);
+        Provider.of<Facilities>(context, listen: false).findById(facilityId) ;
 //List<Photo> photo=[
 //    Photo(path_photo: "https://th.bing.com/th/id/R.a9fd1fe3731d6e4c67d4b280d7512908?rik=Z4VFedr%2b157wag&pid=ImgRaw&r=0")
 //    ];

@@ -18,8 +18,6 @@ class Facility {
   final numberRooms;
   final rate;
 
-
-  
   final wifi;
   final coffee_machine;
   final air_condition;
@@ -68,7 +66,6 @@ class Facility {
 }
 
 class Facilities with ChangeNotifier {
-
 //  static const ApI = 'http://192.168.43.181:8000/';
 //  static const ApI = 'https://laravelprojectfinal.000webhostapp.com/public/';
   static const ApI = 'http://laravelapimk.atwebpages.com/public/';
@@ -128,7 +125,8 @@ class Facilities with ChangeNotifier {
       throw error;
     }
   }
-    deleteFacilityById(id) async {
+
+  deleteFacilityById(id) async {
     final API = ApI + 'api/facility/delete/$id?_method=DELETE';
     var auth = "Bearer" + " " + authToken;
     Map<String, String> headers = {
@@ -138,11 +136,13 @@ class Facilities with ChangeNotifier {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
     };
-    final existingProductIndex = _facilities.indexWhere((prod) => prod.id == id);
+    final existingProductIndex =
+        _facilities.indexWhere((prod) => prod.id == id);
     Facility? existingProduct = _facilities[existingProductIndex];
     _facilities.removeAt(existingProductIndex);
     notifyListeners();
     final response = await http.delete(Uri.parse(API), headers: headers);
+    print(response);
     notifyListeners();
     if (response.statusCode >= 400) {
       _facilities.insert(existingProductIndex, existingProduct);
@@ -175,9 +175,9 @@ class Facilities with ChangeNotifier {
       _loadFacility.addAll(data);
       print("zzzzzlength:${_facilities.length}");
 
-        _facilities.clear();
-        _facilities.addAll( _loadFacility);
-        notifyListeners();
+      _facilities.clear();
+      _facilities.addAll(_loadFacility);
+      notifyListeners();
 
       // print("zzzzzlength:${_loadFacility[0].listImage[0].path_photo}");
 
@@ -186,13 +186,13 @@ class Facilities with ChangeNotifier {
       throw error;
     }
     return _loadFacility;
-
   }
 
   Future<void> fetchAndSetFacility() async {
     const API = ApI + "api/facility/index";
     var auth = "Bearer" + " " + authToken;
-    Map<String, String> headers = {      'X-Requested-With': ' XMLHttpRequest ',
+    Map<String, String> headers = {
+      'X-Requested-With': ' XMLHttpRequest ',
 
       // 'Content-Type': 'multipart/form-data',
       'Authorization': auth,
@@ -200,7 +200,6 @@ class Facilities with ChangeNotifier {
       'Content-Type': 'application/json',
     };
     try {
-
       final response = await http.get(Uri.parse(API), headers: headers);
       final extractData = json.decode(response.body);
       final List<Facility> _loadProduct = [];
@@ -289,14 +288,14 @@ class Facilities with ChangeNotifier {
     }
   }
 
-  Facility findById(id) {
+ Facility findById(id) {
     var facility;
     try {
       facility = _facilities.firstWhere((element) => element.id == id);
     } catch (error) {
-      print("eeeeeeeeeeeeeeeeeeeeeeeeeeeerrrrrrrrrrrrrrrrrrrrrooooooooooooooorrrrrrrr${error}");
-    throw error;
-
+      print(
+          "eeeeeeeeeeeeeeeeeeeeeeeeeeeerrrrrrrrrrrrrrrrrrrrrooooooooooooooorrrrrrrr${error}");
+      throw error;
     }
     return facility;
   }
@@ -312,14 +311,20 @@ class Facilities with ChangeNotifier {
       'Content-Type': 'application/json',
     };
     print("deleteOneImage");
-    final existingProductIndex = _facilities.indexWhere((prod) => prod.id == idFacility);
-    final existingPhotoIndex = _facilities[existingProductIndex].listImage.indexWhere((element) => element.id == idImage);
-    Photo? existingProduct = _facilities[existingProductIndex].listImage[existingPhotoIndex];
+    final existingProductIndex =
+        _facilities.indexWhere((prod) => prod.id == idFacility);
+    final existingPhotoIndex = _facilities[existingProductIndex]
+        .listImage
+        .indexWhere((element) => element.id == idImage);
+    Photo? existingProduct =
+        _facilities[existingProductIndex].listImage[existingPhotoIndex];
     _facilities[existingProductIndex].listImage.removeAt(existingProductIndex);
     notifyListeners();
     final response = await http.delete(Uri.parse(API), headers: headers);
     if (response.statusCode >= 400) {
-      _facilities[existingProductIndex].listImage.insert(existingPhotoIndex, existingProduct);
+      _facilities[existingProductIndex]
+          .listImage
+          .insert(existingPhotoIndex, existingProduct);
       notifyListeners();
       throw HttpException('Could not delete Image.');
     }
@@ -340,7 +345,7 @@ class Facilities with ChangeNotifier {
     try {
       var request = http.MultipartRequest('POST', Uri.parse(API));
       request.headers.addAll(headers);
-      request.fields.addAll({"id":id});
+      request.fields.addAll({"id": id});
       for (var file in listImage) {
         request.files.add(
             await http.MultipartFile.fromPath("photo_list[]", file.path_photo));
@@ -352,9 +357,9 @@ class Facilities with ChangeNotifier {
       if (response.statusCode >= 400) {}
       if (response.statusCode == 201) {
         fetchAndSetFacility();
-     //   final existingProductIndex =
-       // _facilities.indexWhere((prod) => prod.id == id);
-     // _facilities[existingProductIndex].listImage.addAll(listImage);
+        //   final existingProductIndex =
+        // _facilities.indexWhere((prod) => prod.id == id);
+        // _facilities[existingProductIndex].listImage.addAll(listImage);
       }
       notifyListeners();
     } catch (error) {
@@ -368,7 +373,6 @@ class Facilities with ChangeNotifier {
   List<Facility> get getData {
     return [..._facilities];
   }
-
 }
 //var queryParameters = {
 //  'param1': 'one',

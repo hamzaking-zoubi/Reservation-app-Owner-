@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
 import '../Screen/facility_details_screen.dart';
+import '../Screen/test_details_screen.dart';
 import '../constants.dart';
+import '../details extension.dart';
 import '../provider/facility.dart';
-
+import '../Screen/test.dart';
 class FacilityItem extends StatelessWidget {
   final id;
   final title;
@@ -45,7 +47,9 @@ class FacilityItem extends StatelessWidget {
         print("iddddddddddddddddddddd${id}");
 
 
-        Navigator.of(context).pushNamed(DetailScreen.routeName, arguments: id);
+     //   Navigator.of(context).pushNamed(DetailScreen.routeName, arguments: id);
+        Navigator.of(context).pushNamed(NewDetailsScreen.routeName, arguments: id);
+    //    Navigator.of(context).pushNamed(testdetal.routName, arguments: id);
       },
       child: Container(
           width: double.infinity,

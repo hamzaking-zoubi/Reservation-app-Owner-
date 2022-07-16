@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:project24/Screen/profile_screen.dart';
+import 'package:project24/Screen/setting.dart';
 import 'package:provider/provider.dart';
 import '../Widget/_showErrorDialog.dart';
 import '../Widget/profile_list_item.dart';
@@ -51,49 +52,20 @@ class MyAppli extends StatelessWidget {
     var profileInfo = Column(
       children: <Widget>[
         Container(
-          height: kSpacingUnit.w * 10,
-          width: kSpacingUnit.w * 10,
+          height: kSpacingUnit.w * 13,
+          width: kSpacingUnit.w * 13,
           margin: EdgeInsets.only(top: kSpacingUnit.w * 2),
-          child: InkWell(
-            onTap: () {},
-            child: Stack(
-              children: <Widget>[
-                CircleAvatar(
-                  radius: kSpacingUnit.w * 5,
-                  backgroundImage: AssetImage('assets/images/bp_avatar.png'),
-                ),
-                Align(
-                  alignment: Alignment.bottomRight,
-                  child: Container(
-                    height: kSpacingUnit.w * 2.5,
-                    width: kSpacingUnit.w * 2.5,
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).accentColor,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Center(
-                      heightFactor: kSpacingUnit.w * 1.5,
-                      widthFactor: kSpacingUnit.w * 1.5,
-                      child: Icon(
-                        LineAwesomeIcons.pen,
-                        color: kPrimaryColor,
-                        size: ScreenUtil().setSp(kSpacingUnit.w * 1.5),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+          child:Image.asset('images/logo.png')  ,
         ),
         SizedBox(height: kSpacingUnit.w * 2),
         Text(
-          'Nicolas Adams',
-          style: kTitleTextStyle,
+          'Bookify',
+          style: kTitleTextStyle.copyWith(color:Theme.of(context).accentColor  ),
+
         ),
         SizedBox(height: kSpacingUnit.w * 0.5),
         Text(
-          'nicolasadams@gmail.com',
+          'Dash Bord Application',
           style: kTitleTextStyle,
         ),
         SizedBox(height: kSpacingUnit.w * 3),
@@ -103,30 +75,7 @@ class MyAppli extends StatelessWidget {
       appBar: AppBar(
         title: Text("Setting"),
         backgroundColor: Theme.of(context).primaryColor,
-        actions: [
-         FlatButton(
-            onPressed: () {
-              NotificationApi.showNotification(
-                  title:  "Oz Cohen",
-                  body: "Hey!! this is my first Notification!",
-                  payload: "oz.ss",
-              );
 
-            },
-            child: const Icon(Icons.add),
-          ),
-//          FlatButton(
-//            onPressed: () {
-//              NotificationApi.showScheduleNotification(
-//                title:  "hamza",
-//                body: "Hey!! this is my first Notification!",
-//                payload: "oz.ss",
-//                scheduleDate:DateTime.now().add(Duration(seconds:15 )) ,
-//              );
-//            },
-//            child: const Icon(Icons.g_mobiledata),
-//          ),
-        ],
       ),
       body: Column(
         children: <Widget>[
@@ -140,7 +89,6 @@ class MyAppli extends StatelessWidget {
                   text: 'Profile',
                   onPress: () {
                     Navigator.of(context).pushNamed(ProfileScreen.routeName);
-
                   },
                 ),
                 ProfileListItem(
@@ -149,7 +97,10 @@ class MyAppli extends StatelessWidget {
                   text: 'Help & Support',
                 ),
                 ProfileListItem(
-                  onPress: () {},
+                  onPress: () {
+                    Navigator.of(context).pushNamed(SettingScreen.routeName);
+
+                  },
                   icon: LineAwesomeIcons.cog,
                   text: 'Settings',
                 ),
@@ -165,7 +116,7 @@ class MyAppli extends StatelessWidget {
                   onPress: () {
 
                   },
-                  icon: LineAwesomeIcons.orcid,
+                  icon: LineAwesomeIcons.question,
                   text: 'About Bookify',
                 ),
               ],
