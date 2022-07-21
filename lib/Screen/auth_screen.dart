@@ -151,16 +151,21 @@ class _AuthCardState extends State<AuthCard> {
       if (_authMode == AuthMode.Login) {
         // Log user in
         await Provider.of<Auth>(context, listen: false)
-            .signIn(email!, passWord!)
+            .signIn(email!, passWord!).catchError((error){
+          showErrorDialog(error,context);
+        })
             .then((value) {
-          Navigator.of(context).pushNamedAndRemoveUntil(
-              MainWidget.routeName, (Route<dynamic> route) => false);        });
+       //   Navigator.of(context).pushNamedAndRemoveUntil(
+           //   MainWidget.routeName, (Route<dynamic> route) => false);
+            });
       } else {
         await Provider.of<Auth>(context, listen: false)
-            .signUp(email!, passWord!, confir!, name!)
+            .signUp(email!, passWord!, confir!, name!).catchError((error){
+              showErrorDialog(error,context);
+            })
             .then((value) {
-          Navigator.of(context).pushNamedAndRemoveUntil(
-              MainWidget.routeName, (Route<dynamic> route) => false);
+        //  Navigator.of(context).pushNamedAndRemoveUntil(
+          //    MainWidget.routeName, (Route<dynamic> route) => false);
         });
       }
     } catch (error) {

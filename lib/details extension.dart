@@ -90,7 +90,7 @@ class DetailExtension extends StatelessWidget {
               ),
 
               SIZED_BOX_W20,
-              for (int i = 0; i < rate; i++)
+              for (int i = 0; i < 5; i++)
                 SvgPicture.asset(_STAR_ICON, height: 20),
               SIZED_BOX_W06,
 
@@ -162,7 +162,7 @@ class DetailExtension extends StatelessWidget {
                       name: 'TV',
                       fontSize: 12,
                       size: 45,
-                      iconUrl: 'assets/icons/detail_screen/air-conditioner.svg',
+                      iconUrl: 'assets/icons/detail_screen/tv.svg',
                       radius: 12,
                       color: kBackgroundLightColor
               )

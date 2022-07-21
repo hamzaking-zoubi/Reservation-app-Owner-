@@ -2,20 +2,50 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'package:flutter/cupertino.dart';
+import 'package:project24/provider/message_model.dart';
 import 'package:pusher_client/pusher_client.dart';
-
-import 'notificationApi.dart';
-
-//instantiate Pusher Class
+import 'package:intl/intl.dart';
 
 class PusherController with ChangeNotifier {
-  static final PusherController _pusherController = PusherController._internal();
+  static final PusherController _pusherController =
+      PusherController._internal();
 
   factory PusherController() {
     return _pusherController;
   }
 
+  String? _message;
+  Channel? _channel;
+
+  get message => _message;
+
   PusherController._internal();
+
+  List<Message> messages = [];
+
+  void sendMessage(String text, String id_recipient) {
+    final String time = DateFormat('mm:ss a').format(DateTime.now());
+
+    if (text != '') {
+      Message mass=  Message(
+          isRead: false,
+          id: ' ',
+          id_recipient: id_recipient,
+          id_send: ' ',
+          time: time,
+          message: text);
+
+
+
+      messages.insert(
+        0,
+          mass
+      );
+    //  AllMessage x;
+    //x.   broadcast(mass);
+      notifyListeners();
+    }
+  }
 
   PusherClient? pusher;
   Channel? channel;
@@ -24,22 +54,29 @@ class PusherController with ChangeNotifier {
   Sink get _inEventData => _eventData.sink;
 
   Stream get eventStream => _eventData.stream;
-  String channelName = "hamza";
+  String channelName = "";
   String prevChannelName = "";
-  String eventName = "noti";
+  String eventName = "";
 
-  initPusher()  {
+  initPusher() {
     PusherOptions options = PusherOptions(
+//      auth: PusherAuth(
+//          headers: {
+//    'Authorization': 'Bearer ',
+//    'Content-Type': 'application/json',
+//    'Accept': 'application/json'
+//    }
+//
+//    ),
       cluster: "ap2",
-    );
-    pusher = PusherClient("ed9964680b53ce88cdb8", options,
-
-        autoConnect: true,
-        enableLogging: true
 
     );
+    pusher = PusherClient("98034be202413ea485fc", options,
+        autoConnect: true, enableLogging: true);
 
-    print("------------11-------------");
+
+
+
   }
 
   void setChannelName(String name) {
@@ -57,37 +94,33 @@ class PusherController with ChangeNotifier {
     pusher!.onConnectionStateChange((state) {
       log("previousState: ${state!.previousState}, currentState: ${state.currentState}");
     });
-
     pusher!.onConnectionError((error) {
       log("error: ${error!.message}");
     });
-
-    channel!.bind("noti", (onEvent) {
+    channel!.bind(eventName, (last) {
       print("-------------------------");
-      final data = json.decode(onEvent!.data.toString());
-      print("->>>${data}");
-      if (onEvent.data != null) {
-         NotificationApi.showNotification(
-          title: "data['tittle']",
-          body: "data['body']",
-          payload: "oz.ss",
-        );
+      final data = json.decode(last!.data.toString());
+      if (last.data != null) {
+        messages.insert(
+            0,
+            Message(
+                time: data['message']['created_at'].toString(),
+                id: data['message']['id'].toString(),
+                message: data['message']['message'].toString(),
+                id_send: data['message']['id_send'],
+                id_recipient: data['message']['id_send'].toString(),
+                isRead: data['message']['read_at']));
+
+        notifyListeners();
       }
 
-      _inEventData.add(onEvent.data);
-
+      _inEventData.add(last.data);
       prevChannelName = eventName;
     });
   }
 
   void connectPusher() {
     pusher!.connect();
-  }
-
-  Future<void> getNo() async {
-    await initPusher();
-    connectPusher();
-    subscribePusher();
   }
 
   void disconnectPusher() async {

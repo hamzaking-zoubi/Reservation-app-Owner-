@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:project24/provider/photo.dart';
 import 'package:http/http.dart' as http;
-import 'package:project24/provider/user_model.dart';
+import 'package:project24/provider/chats_model.dart';
 import '../http_exception.dart';
 
 class Facility {
@@ -66,9 +66,10 @@ class Facility {
 }
 
 class Facilities with ChangeNotifier {
-//  static const ApI = 'http://192.168.43.181:8000/';
-//  static const ApI = 'https://laravelprojectfinal.000webhostapp.com/public/';
-  static const ApI = 'http://laravelapimk.atwebpages.com/public/';
+      static const ApI = 'http://192.168.1.108:8000/';
+
+  //  static const ApI = 'https://laravelprojectfinal.000webhostapp.com/public/';
+  //  static const ApI = 'http://laravelapimk.atwebpages.com/public/';
   final String authToken;
   List<Facility> _facilities = [];
 
@@ -156,7 +157,6 @@ class Facilities with ChangeNotifier {
     var API = ApI + "api/facility/index";
     var auth = "Bearer" + " " + authToken;
     Map<String, String> headers = {
-      // 'Content-Type': 'multipart/form-data',
       'Authorization': auth,
       'X-Requested-With': ' XMLHttpRequest ',
       'Accept': 'application/json',
@@ -165,24 +165,23 @@ class Facilities with ChangeNotifier {
     print(auth);
     final List<Facility> _loadFacility = [];
     try {
-      ///  static const ApI='http://192.168.1.106:8000/';
       final response = await http.get(Uri.parse(API), headers: headers);
       final extractData = json.decode(response.body);
+      print('=======================');
       print(extractData);
+      print('=======================');
+
       final data = (extractData['Data'] as List)
           .map((data) => Facility.fromJson(data))
           .toList();
-      _loadFacility.addAll(data);
+
+        _loadFacility.addAll(data);
       print("zzzzzlength:${_facilities.length}");
-
-      _facilities.clear();
+     _facilities.clear();
       _facilities.addAll(_loadFacility);
-      notifyListeners();
-
-      // print("zzzzzlength:${_loadFacility[0].listImage[0].path_photo}");
-
+    //  notifyListeners();
     } catch (error) {
-      print("error ${error}");
+      print("error in fetchAndSetFacilityList::==>> ${error}");
       throw error;
     }
     return _loadFacility;
@@ -374,6 +373,7 @@ class Facilities with ChangeNotifier {
     return [..._facilities];
   }
 }
+
 //var queryParameters = {
 //  'param1': 'one',
 //  'param2': 'two',

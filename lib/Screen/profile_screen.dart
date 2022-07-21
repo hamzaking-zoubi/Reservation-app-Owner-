@@ -17,7 +17,6 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
-   // final profile = Provider.of<MyProfile>(context).myProfile;
     return Scaffold(
       body: FutureBuilder(
         future: Provider.of<MyProfile>(context).fetchProfileInfo(),

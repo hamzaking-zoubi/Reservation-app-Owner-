@@ -1,131 +1,106 @@
-import './user_model.dart';
+import 'dart:convert';
+
+import 'package:flutter/cupertino.dart';
+import 'package:http/http.dart' as http;
+import './chats_model.dart';
+import 'facility.dart';
 
 class Message {
-  final User sender;
-  final String avatar;
+  final String id;
+  final String id_send;
+  final String id_recipient;
   final String time;
-  final int unreadCount;
   final bool isRead;
-  final String text;
-  Message({
-    required this.sender,
-    required this.avatar,
-    required this.time,
-     this.unreadCount=0,
-    required this.text,
-     this.isRead=false,
-  });
-}
-final List<Message> recentChats = [
-  Message(
-    sender: addison,
-    avatar: 'assets/images/Addison.jpg',
-    time: '01:25',
-    text: "typing...",
-    unreadCount: 1,
-  ),
-  Message(
-    sender: jason,
-    avatar: 'assets/images/Jason.jpg',
-    time: '12:46',
-    text: "Will I be in it?",
-    unreadCount: 1,
-  ),
-  Message(
-    sender: deanna,
-    avatar: 'assets/images/Deanna.jpg',
-    time: '05:26',
-    text: "That's so cute.",
-    unreadCount: 3,
-  ),
-  Message(
-      sender: nathan,
-      avatar: 'assets/images/Nathan.jpg',
-      time: '12:45',
-      text: "Let me see what I can do.",
-      unreadCount: 2
-  ),
-];
-final List<Message> allChats = [
-  Message(
-    sender: virgil,
-    avatar: 'assets/images/Virgil.jpg',
-    time: '12:59',
-    text: "No! I just wanted",
-    unreadCount: 0,
-    isRead: true,
-  ),
-  Message(
-    sender: stanley,
-    avatar: 'assets/images/Stanley.jpg',
-    time: '10:41',
-    text: "You did what?",
-    unreadCount: 1,
-    isRead: false,
-  ),
-  Message(
-    sender: leslie,
-    avatar: 'assets/images/Leslie.jpg',
-    time: '05:51',
-    unreadCount: 0,
-    isRead: true,
-    text: "just signed up for a tutor",
-  ),
-  Message(
-    sender: judd,
-    avatar: 'assets/images/Judd.jpg',
-    time: '10:16',
-    text: "May I ask you something?",
-    unreadCount: 2,
-    isRead: false,
-  ),
-];
+  final String message;
 
-final List<Message> messages = [
   Message(
-    sender: addison,
-    time: '12:09 AM',
-    avatar: addison.avatar,
-    text: "...",
-  ),
-  Message(
-    avatar:addison.avatar,
-    sender: currentUser,
-    time: '12:05 AM',
-    isRead: true,
-    text: "I’m going home.",
-  ),
-  Message(
-    avatar:addison.avatar ,
-    sender: currentUser,
-    time: '12:05 AM',
-    isRead: true,
-    text: "See, I was right, this doesn’t interest me.",
-  ),
-  Message(
-    sender: addison,
-    time: '11:58 PM',
-    avatar: addison.avatar,
-    text: "I sign your paychecks.",
-  ),
-  Message(
-    sender: addison,
-    time: '11:58 PM',
-    avatar: addison.avatar,
-    text: "You think we have nothing to talk about?",
-  ),
-  Message(
-    avatar:addison.avatar ,
-    sender: currentUser,
-    time: '11:45 PM',
-    isRead: true,
-    text:
-        "Well, because I had no intention of being in your office. 20 minutes ago",
-  ),
-  Message(
-    sender: addison,
-    time: '11:30 PM',
-    avatar: addison.avatar,
-    text: "I was expecting you in my office 20 minutes ago.",
-  ),
-];
+      {required this.id,
+      required this.id_send,
+      required this.id_recipient,
+      required this.time,
+      required this.isRead,
+      required this.message});
+
+  factory Message.fromJson(Map<String, dynamic> json) => Message(
+      time: json['created_at'].toString(),
+      id: json['id'].toString(),
+      message: json['message'].toString(),
+      id_send: json['id_send'],
+      id_recipient: json['id_send'].toString(),
+      isRead: json['read_at']);
+}
+
+class AllMessage with ChangeNotifier {
+  List<Message> _allMessage = [];
+
+  Future<List<Message>> fetchAllMessageList(id_recipient) async {
+    var API = Facilities.ApI + "api/chat/show";
+    // var auth = "Bearer" + " " + authToken;
+    var auth = "Bearer" + " " + '72|e7caUjGJKQTHaTgirPDKzxCnWvY5YjYNb0vvsre5';
+    Map<String, String> headers = {
+      'Authorization': auth,
+      'X-Requested-With': ' XMLHttpRequest ',
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    };
+    print(auth);
+    final List<Message> _loadMessage = [];
+    try {
+      var queryParameters = {"id_recipient": id_recipient.toString()};
+
+      var uri =
+          Uri.https('192.168.1.108:8000', '/api/chat/show', queryParameters);
+
+      final response = await http.get(uri, headers: headers);
+      // final response = await http.get(Uri.parse(API), headers: headers);
+      final extractData = json.decode(response.body);
+      print('------------------------------------');
+      print(extractData);
+      print('------------------------------------');
+
+      final data = (extractData['messages'] as List)
+          .map((data) => Message.fromJson(data))
+          .toList();
+      _loadMessage.addAll(data);
+      print("zzzzzlength:${_loadMessage.length}");
+      _allMessage.clear();
+      _allMessage.addAll(_loadMessage);
+    } catch (error) {
+      print("error fetchAllMessageList==>> ${error}");
+      throw error;
+    }
+    return _loadMessage;
+  }
+
+  broadcast( message) async {
+    var API = Facilities.ApI + "api/chat/send";
+    // var auth = "Bearer" + " " + authToken;
+    var auth = "Bearer" + " " + '72|e7caUjGJKQTHaTgirPDKzxCnWvY5YjYNb0vvsre5';
+    Map<String, String> headers = {
+      'Authorization': auth,
+      'X-Requested-With': ' XMLHttpRequest ',
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    };
+    Map<String, dynamic> body = {
+      "id_recipient": message.id_recipient,
+      "message": message.message
+    };
+
+    print(auth);
+    try{
+    final response = await http.post(Uri.parse(API), headers: headers, body: body);
+    print(response);
+  }catch(error){
+      print(error);
+      throw error;
+    }
+
+  }
+
+  List<Message> get allMessage => [..._allMessage];
+
+  findById(id) {
+    return _allMessage.indexWhere((element) => element.id == id);
+  }
+}

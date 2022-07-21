@@ -36,7 +36,7 @@ class ServiceCard extends StatelessWidget {
                 iconUrl,
                 width: size,
                 height: size,
-                color:Colors.green ,
+                color:Theme.of(context).primaryColor ,
               ),
             )),
         SIZED_BOX_H06,

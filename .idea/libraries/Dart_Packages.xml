@@ -240,6 +240,13 @@
             </list>
           </value>
         </entry>
+        <entry key="intl">
+          <value>
+            <list>
+              <option value="C:/flutter/.pub-cache/hosted/pub.dartlang.org/intl-0.17.0/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="js">
           <value>
             <list>
@@ -603,6 +610,7 @@
       <root url="file://C:/flutter/.pub-cache/hosted/pub.dartlang.org/image_picker_for_web-2.1.8/lib" />
       <root url="file://C:/flutter/.pub-cache/hosted/pub.dartlang.org/image_picker_ios-0.8.5+5/lib" />
       <root url="file://C:/flutter/.pub-cache/hosted/pub.dartlang.org/image_picker_platform_interface-2.5.0/lib" />
+      <root url="file://C:/flutter/.pub-cache/hosted/pub.dartlang.org/intl-0.17.0/lib" />
       <root url="file://C:/flutter/.pub-cache/hosted/pub.dartlang.org/js-0.6.4/lib" />
       <root url="file://C:/flutter/.pub-cache/hosted/pub.dartlang.org/line_awesome_flutter-2.0.0/lib" />
       <root url="file://C:/flutter/.pub-cache/hosted/pub.dartlang.org/lints-1.0.1/lib" />

@@ -52,6 +52,7 @@ dependencies:
   pusher_client: ^2.0.0
   workmanager: ^0.5.0
   babstrap_settings_screen: ^0.1.3
+  intl:
 
 
 dev_dependencies:

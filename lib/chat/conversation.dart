@@ -1,20 +1,23 @@
 import 'package:flutter/material.dart';
 import '../myThem.dart';
 import '../provider/message_model.dart';
-import '../provider/user_model.dart';
+import '../provider/chats_model.dart';
 class Conversation extends StatelessWidget {
   const Conversation({
-    required this.user,
-  }) ;
-  final User user;
+    required this.id,
+  });
+  final String id;
+
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
         reverse: true,
-        itemCount: messages.length,
+        itemCount: 1,
+        //messages.length,
         itemBuilder: (context, int index) {
-          final message = messages[index];
-          bool isMe = message.sender.id == currentUser.id;
+         // final message = messages[index];
+         // bool isMe = message.sender.id == currentUser.id;
+          bool isMe=true;
           return Container(
             margin: EdgeInsets.only(top: 10),
             child: Column(
@@ -27,7 +30,7 @@ class Conversation extends StatelessWidget {
                     if (!isMe)
                       CircleAvatar(
                         radius: 15,
-                        backgroundImage: AssetImage(user.avatar),
+                        //backgroundImage: AssetImage(user.avatar),
                       ),
                     SizedBox(
                       width: 10,
@@ -44,8 +47,8 @@ class Conversation extends StatelessWidget {
                             bottomLeft: Radius.circular(isMe ? 12 : 0),
                             bottomRight: Radius.circular(isMe ? 0 : 12),
                           )),
-                      child: Text(
-                        messages[index].text,
+                      child: Text('chattttttt'
+                        //messages[index].message,
 //                        style: MyTheme.bodyTextMessage.copyWith(
 //                            color: isMe ? Colors.white : Colors.grey[800]),
                       ),
@@ -71,7 +74,7 @@ class Conversation extends StatelessWidget {
                         width: 8,
                       ),
                       Text(
-                        message.time,
+                        "message.time",
                        // style: MyTheme.bodyTextTime,
                       )
                     ],

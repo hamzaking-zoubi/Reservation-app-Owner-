@@ -70,6 +70,8 @@ class Auth with ChangeNotifier {
           throw responseData["Error"]['email'].toString();
         if (responseData["Error"]['password'] != null)
           throw responseData["Error"]['password'].toString();
+        if(response.statusCode >=400)
+          throw 'error';
       }
     } catch (erorr) {
       print(erorr);
@@ -126,6 +128,8 @@ class Auth with ChangeNotifier {
           throw responseData["Error"]['email'].toString();
         if (responseData["Error"]['password'] != null)
           throw responseData["Error"]['password'].toString();
+        if(response.statusCode >=400)
+          throw 'error';
       }
     } catch (erorr) {
       print(erorr);

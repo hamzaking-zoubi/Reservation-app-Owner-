@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
-import '../Screen/facility_details_screen.dart';
 import '../Screen/test_details_screen.dart';
 import '../constants.dart';
 import '../details extension.dart';
 import '../provider/facility.dart';
-import '../Screen/test.dart';
 class FacilityItem extends StatelessWidget {
   final id;
   final title;
@@ -73,8 +71,7 @@ class FacilityItem extends StatelessWidget {
                             child: FadeInImage.assetNetwork(
                                 image: Facilities.ApI + '${image}',
                                 placeholder: _LOADING_IMAGE,
-//                                placeholder: AssetImage(_LOADING_IMAGE),
-//                                image: NetworkImage(Facilities.ApI+'${image}'),
+
                                 width: double.infinity,
                                 fit: BoxFit.cover)),
                       ),

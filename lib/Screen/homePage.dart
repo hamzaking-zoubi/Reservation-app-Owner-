@@ -63,7 +63,7 @@ class _HomePageState extends State<HomePage> {
       Padding(
         padding: const EdgeInsets.all(8.0),
         child: FutureBuilder(
-          future: Provider.of<Facilities>(context, listen: false)
+          future: Provider.of<Facilities>(context)
               .fetchAndSetFacilityList(),
           builder: (context, AsyncSnapshot<List> snapshot) =>
           snapshot.hasData

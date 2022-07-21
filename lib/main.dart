@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:project24/Screen/addFacility_screen.dart';
 import 'package:project24/Screen/auth_screen.dart';
+import 'package:project24/provider/chats_model.dart';
 import 'package:project24/provider/darkTheme.dart';
 import 'package:project24/provider/auth.dart';
 import 'package:project24/provider/facility.dart';
@@ -15,12 +16,11 @@ import 'package:project24/theme_cusomized.dart';
 import 'package:provider/provider.dart';
 import 'package:pusher_client/pusher_client.dart';
 import 'package:workmanager/workmanager.dart';
-import 'Screen/facility_details_screen.dart';
 import 'Screen/homePage.dart';
 import 'Screen/myApp.dart';
 import 'Screen/profile_screen.dart';
 import 'Screen/setting.dart';
-import 'Screen/test.dart';
+
 import 'Screen/test_details_screen.dart';
 import 'Widget/boutton.dart';
 import 'notificationApi.dart';
@@ -85,6 +85,14 @@ class MyApp extends StatelessWidget {
           ),
           ChangeNotifierProvider(create: (context) => Orders()),
           ChangeNotifierProvider(create: (context) => MyProfile()),
+          ChangeNotifierProxyProvider<Auth, AllChat>(
+            create: (_) => AllChat([], ' '),
+            update: (BuildContext context, auth, AllChat? previous) => AllChat(
+                previous!.allChats == null ? [] : previous.allChats,
+                auth.token ?? " ",
+                //auth.userId ?? " "
+            ),
+          ),
         ],
         child: Consumer2<Auth, DarkThem>(
             builder: (ctx, auth, them, _) => MaterialApp(
@@ -96,12 +104,10 @@ class MyApp extends StatelessWidget {
                   addFacility.routeName: (context) => addFacility(),
                   HomePage.routeName: (context) => HomePage(),
                   MainWidget.routeName: (context) => MainWidget(),
-                  DetailScreen.routeName: (context) => DetailScreen(),
                   MyAppli.routeName: (context) => MyAppli(),
                   ProfileScreen.routeName: (context) => ProfileScreen(),
                   SettingScreen.routeName: (context) => SettingScreen(),
                   NewDetailsScreen.routeName: (context) => NewDetailsScreen(),
-               //   testdetal.routName: (context) => testdetal(),
                 },
                 title: 'Flutter Demo',
                 home: auth.isAuth
@@ -109,12 +115,9 @@ class MyApp extends StatelessWidget {
                     : FutureBuilder(
                         future: auth.tryAutoLogin(),
                         builder: (ctx, authResultSnapShot) =>
-                            authResultSnapShot.connectionState == ConnectionState.waiting
+                            authResultSnapShot.connectionState ==
+                                    ConnectionState.waiting
                                 ? SplashScreen()
-                                : AuthScreen()
-                )
-            )
-        )
-    );
+                                : AuthScreen()))));
   }
 }

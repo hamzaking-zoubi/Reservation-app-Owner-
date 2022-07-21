@@ -1,19 +1,24 @@
 import 'package:flutter/material.dart';
 
 import '../myThem.dart';
-import '../provider/user_model.dart';
+import '../provider/chats_model.dart';
+import '../provider/facility.dart';
 import 'chat_composer.dart';
 import 'conversation.dart';
 
-
-
-
 class ChatRoom extends StatefulWidget {
-  const ChatRoom({ required this.user}) ;
-
   @override
   _ChatRoomState createState() => _ChatRoomState();
-  final User user;
+  final String name;
+  final String id_user;
+  final bool statuse;
+  final String avatar;
+
+  ChatRoom(
+      {required this.name,
+      required this.id_user,
+      required this.statuse,
+      required this.avatar});
 }
 
 class _ChatRoomState extends State<ChatRoom> {
@@ -27,24 +32,28 @@ class _ChatRoomState extends State<ChatRoom> {
           children: [
             CircleAvatar(
               radius: 30,
-              backgroundImage: AssetImage(
-                widget.user.avatar,
-              ),
+              backgroundImage:
+                  NetworkImage(Facilities.ApI + '${widget.avatar}'),
             ),
-            SizedBox(
+            const SizedBox(
               width: 20,
             ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  widget.user.name,
+                  widget.name,
                   style: MyTheme.chatSenderName,
                 ),
-                Text(
-                  'online',
-                  style: MyTheme.bodyText1.copyWith(fontSize: 18),
-                ),
+                widget.statuse
+                    ? Text(
+                        'online',
+                        style: MyTheme.bodyText1.copyWith(fontSize: 18),
+                      )
+                    : Text(
+                        'offline',
+                        style: MyTheme.bodyText1.copyWith(fontSize: 18),
+                      ),
               ],
             ),
           ],
@@ -73,7 +82,9 @@ class _ChatRoomState extends State<ChatRoom> {
                     topLeft: Radius.circular(30),
                     topRight: Radius.circular(30),
                   ),
-                  child: Conversation(user: widget.user),
+                  child: Conversation(
+                    id: widget.id_user,
+                  ),
                 ),
               ),
             ),
