@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:project24/provider/photo.dart';
 import 'package:http/http.dart' as http;
-import 'package:project24/provider/chats_model.dart';
 import '../http_exception.dart';
 
 class Facility {
@@ -69,10 +68,8 @@ class Facility {
 
 class Facilities with ChangeNotifier {
 
-  static const ApI = 'http://192.168.137.148:8000/';
+  static const ApI = 'http://192.168.1.108:8000/';
 
-  //  static const ApI = 'https://laravelprojectfinal.000webhostapp.com/public/';
-  //  static const ApI = 'http://laravelapimk.atwebpages.com/public/';
   final String authToken;
   List<Facility> _facilities = [];
 
