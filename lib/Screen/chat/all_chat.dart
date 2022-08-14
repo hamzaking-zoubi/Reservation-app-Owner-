@@ -1,15 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import 'package:provider/provider.dart';
-
-
 import '../../components/time_ago.dart';
 import '../../constants/myThem.dart';
 import '../../provider/chats_model.dart';
 import '../../provider/facility.dart';
 import 'chat_room.dart';
-
 class AllChats extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

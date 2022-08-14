@@ -8,7 +8,7 @@ import 'package:pusher_client/pusher_client.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
-import 'package:http/http.dart'as http;
+import 'package:http/http.dart' as http;
 import 'notificationApi.dart';
 
 class Order {
@@ -20,26 +20,75 @@ class Order {
   final end_Date;
   final create_at;
 
-  Order(this.id, this.id_facility, this.id_user, this.cost,
-      this.start_date, this.end_Date, this.create_at);
+  Order(
+      {required this.id,
+      required this.id_facility,
+      required this.id_user,
+      required this.cost,
+      required this.start_date,
+      required this.end_Date,
+      required this.create_at});
+
+  factory Order.fromJson(Map<String, dynamic> json) => Order(
+        id: json["id"].toString(),
+        id_facility: json["id_facility"].toString(),
+        id_user: json["id_user"].toString(),
+        cost: json["cost"]== null ? 0.0 : json['cost'].toDouble(),
+        create_at: json["create_at"].toString(),
+        end_Date: json["end_Date"].toString(),
+        start_date: json["start_date"].toString(),
+      );
 }
 
 class Orders with ChangeNotifier {
-  List<Order> _orders = [
-    new Order("1", "1", "10", 55, true, "1/12/2022", "10/12/2022",)
-  ];
+  List<Order> _orders = [];
   final String authToken;
-
-
+  PusherClient? pusher;
+  Channel? channel;
   Orders(this.authToken, this._orders);
+
   List<Order> get getData {
     return [..._orders];
   }
 
 
-  Future<List> fetchAndOrderList(id_facility) async {
+  Future<List> fetchOneOrderList(id_facility) async {
+    var API = Facilities.ApI + "api/owner/bookings/facility?id_facility=${id_facility}";
+    var auth = "Bearer" + " " + authToken;
+    Map<String, String> headers = {
+      'Authorization': auth,
+      'X-Requested-With': ' XMLHttpRequest',
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    };
+    print(auth);
+    final List<Order> _loadFacility = [];
+    try {
+      final response = await http.get(Uri.parse(API), headers: headers);
+      final extractData = json.decode(response.body);
+      print('=======================');
+      print(extractData);
+      print('=======================');
 
-    var API =Facilities.ApI + "api/owner/bookings/show";
+      final data = (extractData['bookings'] as List)
+          .map((data) => Order.fromJson(data))
+          .toList();
+
+      _loadFacility.addAll(data);
+//      print("zzzzzlength:${_facilities.length}");
+//      _facilities.clear();
+//      _facilities.addAll(_loadFacility);
+//      //  notifyListeners();
+    } catch (error) {
+      print("error in fetchAndSetFacilityList::==>> ${error}");
+      throw error;
+    }
+    return _loadFacility;
+
+
+  }
+  Future<List> fetchAllOrderList() async {
+    var API = Facilities.ApI + "api/owner/bookings/show";
     var auth = "Bearer" + " " + authToken;
     Map<String, String> headers = {
       'Authorization': auth,
@@ -56,11 +105,11 @@ class Orders with ChangeNotifier {
       print(extractData);
       print('=======================');
 
-      final data = (extractData['Data'] as List)
-          .map((data) => Facility.fromJson(data))
+      final data = (extractData['bookings'] as List)
+          .map((data) => Order.fromJson(data))
           .toList();
 
-//      _loadFacility.addAll(data);
+      _loadFacility.addAll(data);
 //      print("zzzzzlength:${_facilities.length}");
 //      _facilities.clear();
 //      _facilities.addAll(_loadFacility);
@@ -69,13 +118,8 @@ class Orders with ChangeNotifier {
       print("error in fetchAndSetFacilityList::==>> ${error}");
       throw error;
     }
-    return [];
-
-
-
-    return _orders;
+    return _loadFacility;
   }
-
   Order findById(id) {
     var facility;
     try {
@@ -87,46 +131,67 @@ class Orders with ChangeNotifier {
     }
     return facility;
   }
-
-  static const API_KEY = "44f1ce32e7383ebc0ac1";
-
-  static const API_CLUSTER = "ap2";
-
-  intilize() {
-    PusherOptions options = PusherOptions(
-      cluster: "ap2",
+  Future<void> initPusher() async {
+    var endpoint = Facilities.ApI + "api/broadcasting/auth";
+    var auth = "Bearer" + " " + authToken;
+    PusherAuth auth1 = PusherAuth(
+      endpoint.trim().toString(),
+      headers: {
+        'Authorization': auth,
+      },
     );
-    PusherClient pusher = PusherClient(
-      "44f1ce32e7383ebc0ac1",
-      options,
-      enableLogging: false,
-      autoConnect: false,
-    );
-    pusher.connect();
-    pusher.onConnectionStateChange((state) {
-      print(
-          "previousState: ${state!.previousState}, currentState: ${state.currentState}");
-    });
-    pusher.onConnectionError((error) {
-      print("errornnnnn: ${error!.message}");
-    });
-    Channel channel = pusher.subscribe("hamza");
-    channel.bind("noti", (onEvent) {
-      print("-------------------------");
-      final data = json.decode(onEvent!.data.toString());
-      print("->>>${data}");
+    PusherOptions options = PusherOptions(auth: auth1, cluster: "ap2");
+    pusher = PusherClient("98034be202413ea485fc", options,
+        autoConnect: false, enableLogging: true);
+  }
+  void connectPusher() {
+    pusher!.connect();
+  }
 
-      NotificationApi.showNotification(
-        title: data['tittle'],
-        body: data['body'],
-        payload: "oz.ss",
-      );
-      print("-------------------------");
-    });
+  void disconnectPusher() async {
+    await channel!.unbind("eventName");
+    await pusher!.unsubscribe("channelName");
+    await pusher!.disconnect();
+  }
 
-// Unsubscribe from channel
-//    pusher.unsubscribe("hamza");
+  void subscribePusher() async {
+    await initPusher();
+    connectPusher();
+    channel = await pusher!.subscribe("channelName");
+    pusher!.onConnectionStateChange((state) {
+      log("previousState: ${state!.previousState}, currentState: ${state.currentState}");
+    });
+    pusher!.onConnectionError((error) {
+      log("error: ${error!.message}");
+    });
+    channel!.bind("eventName", (last) {
+      var data = json.decode(last!.data.toString());
+//      if (last.data != null) {
+//        String id = data['message']['id_send'].toString();
 //
-//    pusher.disconnect();
+//        if (id == _TheSender.toString()) {
+//          messages.insert(
+//              0,
+//              Message(
+//                  time: data['message']['created_at'].toString(),
+//                  id: data['message']['id'].toString(),
+//                  message: data['message']['message'].toString(),
+//                  id_send: data['message']['id_send'],
+//                  id_recipient: data['message']['id_send'].toString(),
+//                  isRead: true));
+//          readMessage(data['message']['id_send']);
+//          notifyListeners();
+//        } else {
+//          var random = math.Random();
+//          int id1 = random.nextInt(100000);
+//          NotificationApi.showNotification(
+//              body: data['message']['message'].toString(),
+//              id: id1,
+//              title: _nameSender);
+//        }
+//      }
+//
+//      prevChannelName = eventName;
+    });
   }
 }

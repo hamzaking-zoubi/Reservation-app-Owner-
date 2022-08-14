@@ -46,7 +46,8 @@ class MyApp extends StatelessWidget {
             update: (BuildContext context, auth, Facilities? previous) =>
                 Facilities(auth.token ?? " ",
                     previous!.getData == null ? [] : previous.getData),
-          ),  ChangeNotifierProxyProvider<Auth, Reviews>(
+          ),
+          ChangeNotifierProxyProvider<Auth, Reviews>(
             create: (_) => Reviews('', []),
             update: (BuildContext context, auth, Reviews? previous) =>
                 Reviews(auth.token ?? " ",
@@ -63,8 +64,6 @@ class MyApp extends StatelessWidget {
                 Orders(auth.token ?? " ",
                     previous!.getData == null ? [] : previous.getData),
           ),
-
-
           ChangeNotifierProvider(create: (context) => MyProfile()),
           ChangeNotifierProxyProvider<Auth, AllChat>(
             create: (_) => AllChat([], ' '),
@@ -98,8 +97,7 @@ class MyApp extends StatelessWidget {
                     : FutureBuilder(
                         future: auth.tryAutoLogin(),
                         builder: (ctx, authResultSnapShot) =>
-                            authResultSnapShot.connectionState ==
-                                    ConnectionState.waiting
+                            authResultSnapShot.connectionState == ConnectionState.waiting
                                 ? SplashScreen()
                                 : AuthScreen()))));
   }

@@ -38,21 +38,21 @@ class NotificationApi {
       _notifications.show(id, title, body, await _notificationDetailes(),
           payload: payload);
 
-//  static Future showScheduleNotification(
-//          {int id = 0,
-//          String? title,
-//          String? body,
-//          String? payload,
-//          required DateTime scheduleDate}) async =>
-//      _notifications.zonedSchedule(
-//        id,
-//        title,
-//        body,
-//        tz.TZDateTime.from(scheduleDate, tz.local),
-//        await _notificationDetailes(),
-//        payload: payload,
-//        uiLocalNotificationDateInterpretation:
-//            UILocalNotificationDateInterpretation.absoluteTime,
-//        androidAllowWhileIdle: true,
-//      );
+  static Future showScheduleNotification(
+          {int id = 0,
+          String? title,
+          String? body,
+          String? payload,
+          required DateTime scheduleDate}) async =>
+      _notifications.zonedSchedule(
+        id,
+        title,
+        body,
+        tz.TZDateTime.from(scheduleDate, tz.local),
+        await _notificationDetailes(),
+        payload: payload,
+        uiLocalNotificationDateInterpretation:
+            UILocalNotificationDateInterpretation.absoluteTime,
+        androidAllowWhileIdle: true,
+      );
 }

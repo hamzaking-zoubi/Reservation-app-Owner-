@@ -31,13 +31,15 @@ class NewDetailsScreen extends StatefulWidget {
   String? id;
 
   @override
-  _NewDetailsScreenState createState() => _NewDetailsScreenState( );
+  _NewDetailsScreenState createState() => _NewDetailsScreenState();
 }
 
 class _NewDetailsScreenState extends State<NewDetailsScreen> {
-  double cost=1.0;
+  double cost = 1.0;
   PickerDateRange? selectedBookingDate;
   int numberOfBookedDays = 0;
+  Reviews? reviews;
+
   List<String> getAmenities() {
     List<String> amenities = [];
     if (facility.fridge) amenities.add('Fridge');
@@ -48,7 +50,8 @@ class _NewDetailsScreenState extends State<NewDetailsScreen> {
     return amenities;
   }
 
-  static const _BACKWARD_ICON = 'assets/icons/signin_screen/bp_backward_icon.svg';
+  static const _BACKWARD_ICON =
+      'assets/icons/signin_screen/bp_backward_icon.svg';
   static const _LOADING_IMAGE = 'assets/images/bp_loading.gif';
 
   Facility facility = Facility(
@@ -75,56 +78,72 @@ class _NewDetailsScreenState extends State<NewDetailsScreen> {
     if (isInit) {
       final facilityId = ModalRoute.of(context)!.settings.arguments;
       facility = Provider.of<Facilities>(context, listen: true).findById(facilityId);
+      reviews = Provider.of<Reviews>(context, listen: false);
+      reviews!.setChannelName("User.Comment.Facility.${facility.id}");
+      reviews!.setEventName("CommentEvent");
+      reviews!.subscribePusher();
+
+      controller.addListener(() {
+        if (_controller.position.maxScrollExtent == _controller.offset) {
+          if (reviews!.url_next_page != null)
+            reviews!.fetchNextReview(facilityId);
+        }
+      });
     }
     isInit = false;
 
     super.didChangeDependencies();
   }
+
+
+
   void _showPaymentConfirmation() {
-    numberOfBookedDays = selectedBookingDate!.endDate
-        !.difference(selectedBookingDate!.startDate!)
-        .inDays +
+    numberOfBookedDays = selectedBookingDate!.endDate!
+            .difference(selectedBookingDate!.startDate!)
+            .inDays +
         1;
     showDialog(
         context: context,
         builder: (ctx) => AlertDialog(
-          title: Text('Payment Confirmation'),
-          content: Text(
-              'This will cost you ${numberOfBookedDays*facility.cost }\$ , Are you sure you want to book?'),
-          actions: [
-            TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: Text('Cancel')),
-            TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: Text('Ok'))
-          ],
-        ));
+              title: Text('Payment Confirmation'),
+              content: Text(
+                  'This will cost you ${numberOfBookedDays * facility.cost}\$ , Are you sure you want to book?'),
+              actions: [
+                TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: Text('Cancel')),
+                TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: Text('Ok'))
+              ],
+            ));
   }
 
   void _onSelectionChanged(DateRangePickerSelectionChangedArgs args) {
-   selectedBookingDate = args.value;
+    selectedBookingDate = args.value;
+
+
     print(selectedBookingDate);
   }
 
   void pickStartReservationDate() {
     showDateRangePicker(
-        builder: (ctx, child) {
-          return Theme(
-            data: Theme.of(context).copyWith(
-              colorScheme: ColorScheme.light(
-                primary: kPrimaryColor, // <-- SEE HERE
-                onPrimary: Colors.white, // <-- SEE HERE
-                onSurface: Colors.blueAccent, // <-- SEE HERE
-              ),
-            ),
-            child: child!,
-          );
-        },
-        context: context,
-        //initialDate: DateTime.now(),
-        firstDate: DateTime.now(),
-        lastDate: DateTime(2023))
+            builder: (ctx, child) {
+              return Theme(
+                data: Theme.of(context).copyWith(
+                  colorScheme: ColorScheme.light(
+                    primary: kPrimaryColor, // <-- SEE HERE
+                    onPrimary: Colors.white, // <-- SEE HERE
+                    onSurface: Colors.blueAccent, // <-- SEE HERE
+                  ),
+                ),
+                child: child!,
+              );
+            },
+            context: context,
+            //initialDate: DateTime.now(),
+            firstDate: DateTime.now(),
+            lastDate: DateTime(2023))
         .then((pickedDate) {
       if (pickedDate == null) return;
       /*setState(() {
@@ -188,7 +207,9 @@ class _NewDetailsScreenState extends State<NewDetailsScreen> {
     );*/
         });
   }
+
   final controller = PageController();
+  final _controller = ScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -228,6 +249,7 @@ class _NewDetailsScreenState extends State<NewDetailsScreen> {
             ),
             Container(
               color: Color(0xFFFFFF).withOpacity(0.4),
+              // color: Colors.black.withOpacity(0.3),
               child: Padding(
                 padding: const EdgeInsets.only(
                     top: 16.0, left: 10, bottom: 10, right: 10),
@@ -281,13 +303,21 @@ class _NewDetailsScreenState extends State<NewDetailsScreen> {
                                                                 MainWidget()));
                                               });
                                             },
-                                            child: Text('oky'),
+                                            child: Text(
+                                              'oky',
+                                              style: TextStyle(
+                                                  color: Theme.of(context)
+                                                      .primaryColor),
+                                            ),
                                           ),
                                           FlatButton(
                                               onPressed: () {
                                                 Navigator.of(context).pop();
                                               },
-                                              child: Text("No"))
+                                              child: Text("No",
+                                                  style: TextStyle(
+                                                      color: Theme.of(context)
+                                                          .primaryColor)))
                                         ]);
                                   });
                             } catch (error) {
@@ -382,35 +412,69 @@ class _NewDetailsScreenState extends State<NewDetailsScreen> {
 
 
               FutureBuilder(
-                future: Provider.of<Reviews>(context)
-                    .fetchAndReviewList(facility.id),
-                builder: (context, AsyncSnapshot<List> snapshot) => snapshot
-                        .hasData
-                    ? Consumer<Reviews>(
-                        builder: (context, value, child) => ListView.builder(
-                            shrinkWrap:true,
-                            physics:ScrollPhysics(),
+                  future: Provider.of<Reviews>(context, listen: false)
+                      .fetchReview(facility.id),
+                  builder: ((ctx, resultSnapShot) => resultSnapShot.connectionState == ConnectionState.waiting
+                      ? Center(child: CircularProgressIndicator())
+                      : Consumer<Reviews>(
+                          builder: (ctx, fetchedReviews, child) =>
+                              ListView.builder(
+                                shrinkWrap: true,
+                                physics: const ScrollPhysics(),
+                                controller: _controller,
+                                itemBuilder: (context, index) {
+                                if (index < fetchedReviews.review.length) {
+                                  return ReviewItem(
+                                      time: fetchedReviews.review[index].time,
+                                      id: fetchedReviews.review[index].id,
+                                      name: fetchedReviews.review[index].name,
+                                      rate: fetchedReviews.review[index].rate,
+                                      comment: fetchedReviews.review[index].comment,
+                                      id_facility: fetchedReviews.review[index].id_facility,
+                                      id_user: fetchedReviews.review[index].id_user,
+                                      path_photo: fetchedReviews.review[index].path_photo,
+                                    );
+                                } else {
+                                    if (fetchedReviews.url_next_page != null) {
+                                      return const Padding(padding: EdgeInsets.symmetric(vertical: 32.0),
+                                        child: Center(child: CircularProgressIndicator()),
+                                      );
+                                    }
+                                    return const SizedBox(
+                                      height: 0,
+                                    );
+                                  }
+                                },
+                              itemCount: fetchedReviews.review.length + 1,
+                              )))),
 
-                            itemCount: snapshot.data!.length,
-                            itemBuilder: (context, index) {
-                              return
-                                ReviewItem(
-                                time: snapshot.data![index].time,
-                                id: snapshot.data![index].id,
-                                name: snapshot.data![index].name,
-                                rate: snapshot.data![index].rate,
-                                comment: snapshot.data![index].comment,
-                                id_facility: snapshot.data![index].id_facility,
-                                id_user: snapshot.data![index].id_user,
-                                path_photo: snapshot.data![index].path_photo,
-                              );
-                            }),
-                      )
-                    : Center(
-                        child: CircularProgressIndicator(),
-                      ),
-              ),
-
+//              FutureBuilder(
+//                future: Provider.of<Reviews>(context).fetchAndReviewList1(facility.id),
+//                builder: (context, AsyncSnapshot<List> snapshot) => snapshot
+//                    .hasData
+//                    ? Consumer<Reviews>(
+//                  builder: (context, fetchedReviews, child) => ListView.builder(
+//                      shrinkWrap:true,
+//                      physics:ScrollPhysics(),
+//                     controller: _controller,
+//                      itemCount: fetchedReviews.review.length,
+//                      itemBuilder: (context, index) {
+//                        return ReviewItem(
+//                          time: fetchedReviews.review[index].time,
+//                          id: fetchedReviews.review[index].id,
+//                          name: fetchedReviews.review[index].name,
+//                          rate: fetchedReviews.review[index].rate,
+//                          comment: fetchedReviews.review[index].comment,
+//                          id_facility: fetchedReviews.review[index].id_facility,
+//                          id_user: fetchedReviews.review[index].id_user,
+//                          path_photo: fetchedReviews.review[index].path_photo,
+//                        );
+//                      }),
+//                )
+//                    : Center(
+//                  child: CircularProgressIndicator(),
+//                ),
+//              ),
             ]),
           ),
         ),
@@ -461,3 +525,33 @@ class _NewDetailsScreenState extends State<NewDetailsScreen> {
             ));
   }
 }
+
+
+//FutureBuilder(
+//future: Provider.of<Reviews>(context).fetchAndReviewList1(facility.id),
+//builder: (context, AsyncSnapshot<List> snapshot) => snapshot
+//    .hasData
+//? Consumer<Reviews>(
+//builder: (context, fetchedReviews, child) => ListView.builder(
+//shrinkWrap:true,
+//physics:ScrollPhysics(),
+//
+//itemCount: snapshot.data!.length,
+//itemBuilder: (context, index) {
+//return
+//ReviewItem(
+//time: snapshot.data![index].time,
+//id: snapshot.data![index].id,
+//name: snapshot.data![index].name,
+//rate: snapshot.data![index].rate,
+//comment: snapshot.data![index].comment,
+//id_facility: snapshot.data![index].id_facility,
+//id_user: snapshot.data![index].id_user,
+//path_photo: snapshot.data![index].path_photo,
+//);
+//}),
+//)
+//: Center(
+//child: CircularProgressIndicator(),
+//),
+//),

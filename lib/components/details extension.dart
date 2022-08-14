@@ -76,6 +76,7 @@ class DetailExtension extends StatelessWidget {
               children: [
                 Text(facilityType, style: _dtlTypeTextStyle),
                 Spacer(),
+               Text("available"),
                Switch1(vailable: available,id:id ,),
               ],
             ),

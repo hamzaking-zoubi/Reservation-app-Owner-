@@ -33,6 +33,7 @@ class MyAppli extends StatelessWidget {
                     child: Text('NO')),
                 FlatButton(
                     onPressed: () {
+                      Navigator.of(context).pop();
                       Provider.of<Auth>(context, listen: false)
                           .logout(context)
                           .catchError((error) {
@@ -115,6 +116,8 @@ class MyAppli extends StatelessWidget {
                   hasNavigation: true,
                   onPress: () {
                     _showErrorDialog(context);
+                   // Navigator.of(context).pop();
+
                   },
                 ),
                 ProfileListItem(

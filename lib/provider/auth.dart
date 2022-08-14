@@ -11,7 +11,7 @@ class Auth with ChangeNotifier {
   var _token;
   var _userId;
 
-  bool get isAuth {
+bool get isAuth {
     if (_token !=null) {
       return true;
     }
@@ -105,6 +105,7 @@ class Auth with ChangeNotifier {
           }));
       var responseData = await json.decode(response.body);
       print(responseData);
+
       if (response.statusCode == 201) {
         _token = responseData['token'].toString();
         _userId = responseData['user']['id'].toString();
@@ -140,7 +141,6 @@ class Auth with ChangeNotifier {
 
   Future<void> logout(context) async {
     var API = Facilities.ApI + 'api/auth/logout?_method=DELETE';
-    // var API = 'http://192.168.43.215:8000/api/auth/logout';
     String tokenAuthorization = "Bearer" + " " + _token;
     Map<String, String> headers = {
       'X-Requested-With': ' XMLHttpRequest ',
@@ -156,10 +156,12 @@ class Auth with ChangeNotifier {
       if (response.statusCode == 201) {
         _token = null;
         _userId = null;
+
         final shP = await SharedPreferences.getInstance();
         shP.clear();
-        Navigator.of(context).pushNamedAndRemoveUntil(
-            AuthScreen.routeName, (Route<dynamic> route) => false);
+        notifyListeners();
+       // Navigator.of(context).pushNamedAndRemoveUntil(
+         //   AuthScreen.routeName, (Route<dynamic> route) => false);
 //        Navigator.of(context).pushReplacementNamed(
 //            AuthScreen.routeName);
       }
@@ -176,8 +178,7 @@ class Auth with ChangeNotifier {
     if (!prefs.containsKey('userData')) {
       return false;
     }
-    final extractedData =
-        json.decode(prefs.getString('userData')!) as Map<String, dynamic>;
+    final extractedData = json.decode(prefs.getString('userData')!) as Map<String, dynamic>;
     _token = extractedData['token'];
     _userId = extractedData['userId'];
     notifyListeners();

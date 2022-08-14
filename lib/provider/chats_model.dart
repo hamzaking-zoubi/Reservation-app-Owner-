@@ -29,10 +29,10 @@ class Chat {
   factory Chat.fromJson(Map<String, dynamic> json) => Chat(
       time: json['lastMessage']['created_at'].toString(),
       id: json['id'].toString(),
-      name: json['profile_rec']['name'] ?? "name",
-      lastMessage: json['lastMessage']['message'] ?? "....",
-      avatar: json['profile_rec']['path_photo'] ?? "..",
-      idLastMessage: json['profile_rec']['id_message']??"",
+      name: json['profile_rec']['name'].toString(),
+      lastMessage: json['lastMessage']['message'].toString(),
+      avatar: json['profile_rec']['path_photo'].toString(),
+      idLastMessage: json['profile_rec']['id_message'].toString(),
       status: json['profile_rec']["status"] == null ? false : json['profile_rec']["status"] == 0 ? false : true,
       countNotRead: json['countNotread'] ?? 0);
 }

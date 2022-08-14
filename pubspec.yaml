@@ -55,6 +55,7 @@ dependencies:
   timeago: ^3.2.2
   intl:
   syncfusion_flutter_datepicker: ^20.2.43
+  url_launcher: ^6.1.3
 
 #  flutter_launch: ^0.3.0
 

@@ -20,14 +20,13 @@ class OrderToOneFacility extends StatelessWidget {
       ) ,
       body: FutureBuilder(
         future: Provider.of<Orders>(context)
-            .fetchAndOrderList(facilityId),
+            .fetchOneOrderList(facilityId),
         builder: (context, AsyncSnapshot<List> snapshot) => snapshot
             .hasData
             ? Consumer<Orders>(
           builder: (context, value, child) => ListView.builder(
               shrinkWrap:true,
-              physics:ScrollPhysics(),
-
+              physics:const ScrollPhysics(),
               itemCount: snapshot.data!.length,
               itemBuilder: (context, index) {
                 return Reservations(
@@ -38,8 +37,6 @@ class OrderToOneFacility extends StatelessWidget {
                   create_at:snapshot.data![index].create_at ,
                   end_Date:snapshot.data![index].end_Date ,
                   start_date:snapshot.data![index].start_date ,
-
-
                 );
               }),
         )
